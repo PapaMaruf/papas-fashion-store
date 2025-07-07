@@ -1,0 +1,15 @@
+{
+  "name": "papas-fashion-api",
+  "version": "1.0.0",
+  "description": "API functions for Papa's Fashion e-commerce site",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "dependencies": {
+    "stripe": "^14.0.0"
+  },
+  "keywords": ["stripe", "ecommerce", "api"],
+  "author": "Papa's Fashion",
+  "license": "MIT"
+}
