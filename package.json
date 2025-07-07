@@ -1,24 +1,15 @@
 {
-  "name": "papas-fashion",
+  "name": "papas-fashion-api",
   "version": "1.0.0",
-  "description": "Papa's Fashion - Premium streetwear e-commerce site",
-  "main": "src/index.html",
+  "description": "API functions for Papa's Fashion e-commerce site",
+  "main": "index.js",
   "scripts": {
-    "start": "live-server src",
-    "build": "echo 'Build step can be added here.'",
-    "dev": "vercel dev",
-    "deploy": "vercel"
+    "test": "echo \"Error: no test specified\" && exit 1"
   },
-  "keywords": ["ecommerce", "fashion", "streetwear"],
-  "author": "Papa's Fashion",
-  "license": "ISC",
   "dependencies": {
-    "cors": "^2.8.5",
-    "express": "^5.1.0",
-    "stripe": "^18.2.1",
-    "nodemailer": "^6.9.7"
+    "stripe": "^14.0.0"
   },
-  "devDependencies": {
-    "live-server": "^1.2.1"
-  }
+  "keywords": ["stripe", "ecommerce", "api"],
+  "author": "Papa's Fashion",
+  "license": "MIT"
 }
