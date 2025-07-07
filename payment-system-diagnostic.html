@@ -1,0 +1,405 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Payment System Diagnostic - Papa's Fashion</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            max-width: 800px;
+            margin: 0 auto;
+            padding: 20px;
+            background: #f5f5f5;
+        }
+        .container {
+            background: white;
+            padding: 30px;
+            border-radius: 10px;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+        }
+        .test-item {
+            margin: 20px 0;
+            padding: 15px;
+            border: 1px solid #ddd;
+            border-radius: 5px;
+            background: #f9f9f9;
+        }
+        .test-result {
+            margin-top: 10px;
+            padding: 10px;
+            border-radius: 5px;
+            font-weight: bold;
+        }
+        .success {
+            background: #d4edda;
+            color: #155724;
+            border: 1px solid #c3e6cb;
+        }
+        .error {
+            background: #f8d7da;
+            color: #721c24;
+            border: 1px solid #f5c6cb;
+        }
+        .info {
+            background: #e3f2fd;
+            color: #0c5460;
+            border: 1px solid #bee5eb;
+        }
+        button {
+            background: #007bff;
+            color: white;
+            border: none;
+            padding: 10px 20px;
+            border-radius: 5px;
+            cursor: pointer;
+            margin: 5px;
+        }
+        button:hover {
+            background: #0056b3;
+        }
+        pre {
+            background: #f8f9fa;
+            padding: 10px;
+            border-radius: 5px;
+            overflow-x: auto;
+            font-size: 12px;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>🔍 Payment System Diagnostic</h1>
+        <p>This tool will help diagnose any issues with your Papa's Fashion payment system.</p>
+
+        <div class="test-item">
+            <h3>1. Environment Detection</h3>
+            <div id="env-result" class="test-result info">
+                <p>Current URL: <span id="current-url"></span></p>
+                <p>Environment: <span id="environment"></span></p>
+                <p>Backend URL: <span id="backend-url"></span></p>
+            </div>
+        </div>
+
+        <div class="test-item">
+            <h3>2. API Test Endpoint</h3>
+            <button onclick="testAPI()">Test API Connection</button>
+            <div id="api-result" class="test-result info">Click the button to test the API connection</div>
+        </div>
+
+        <div class="test-item">
+            <h3>3. Stripe Checkout Session</h3>
+            <button onclick="testStripeCheckout()">Test Stripe Checkout</button>
+            <div id="stripe-result" class="test-result info">Click the button to test Stripe checkout session creation</div>
+        </div>
+
+        <div class="test-item">
+            <h3>4. Environment Variables Check</h3>
+            <button onclick="testEnvironmentVars()">Check Environment Variables</button>
+            <div id="env-vars-result" class="test-result info">Click the button to check if environment variables are configured</div>
+        </div>
+
+        <div class="test-item">
+            <h3>5. Full Payment Flow Test</h3>
+            <button onclick="testFullPaymentFlow()">Test Full Payment Flow</button>
+            <div id="payment-flow-result" class="test-result info">Click the button to test the complete payment flow</div>
+        </div>
+
+        <div class="test-item">
+            <h3>6. Debug Information</h3>
+            <button onclick="showDebugInfo()">Show Debug Info</button>
+            <div id="debug-info" class="test-result info">Click the button to show detailed debug information</div>
+        </div>
+    </div>
+
+    <script>
+        // Helper function to get the correct backend URL
+        function getBackendUrl() {
+            const hostname = window.location.hostname;
+            
+            // Production domain - using Vercel API routes
+            if (hostname.includes('vercel.app') || hostname === 'papasfashion.com' || hostname === 'www.papasfashion.com') {
+                return window.location.origin; // Same domain for Vercel
+            }
+            
+            // Local development - still use the Express server for development
+            if (hostname === 'localhost' || hostname === '127.0.0.1') {
+                return 'http://localhost:3001';
+            } 
+            
+            // Fallback
+            return window.location.origin;
+        }
+
+        // Initialize environment detection
+        document.addEventListener('DOMContentLoaded', function() {
+            document.getElementById('current-url').textContent = window.location.href;
+            document.getElementById('environment').textContent = window.location.hostname.includes('vercel.app') || window.location.hostname === 'papasfashion.com' ? 'Production (Vercel)' : 'Development/Local';
+            document.getElementById('backend-url').textContent = getBackendUrl();
+        });
+
+        // Test API connection
+        async function testAPI() {
+            const resultDiv = document.getElementById('api-result');
+            resultDiv.innerHTML = 'Testing API connection...';
+            resultDiv.className = 'test-result info';
+
+            try {
+                const backendUrl = getBackendUrl();
+                console.log('Testing API at:', `${backendUrl}/api/debug`);
+                
+                const response = await fetch(`${backendUrl}/api/debug`, {
+                    method: 'GET',
+                    headers: { 'Content-Type': 'application/json' }
+                });
+
+                console.log('API Response status:', response.status);
+                console.log('API Response headers:', Object.fromEntries(response.headers.entries()));
+                
+                const contentType = response.headers.get('content-type');
+                console.log('API Response content-type:', contentType);
+                
+                if (!contentType || !contentType.includes('application/json')) {
+                    const responseText = await response.text();
+                    console.error('Non-JSON response:', responseText);
+                    resultDiv.innerHTML = `
+                        <p>❌ API Connection Failed - Non-JSON Response</p>
+                        <p>Status: ${response.status} ${response.statusText}</p>
+                        <p>Content-Type: ${contentType}</p>
+                        <pre>${responseText.substring(0, 500)}...</pre>
+                    `;
+                    resultDiv.className = 'test-result error';
+                    return;
+                }
+
+                if (response.ok) {
+                    const data = await response.json();
+                    resultDiv.innerHTML = `
+                        <p>✅ API Connection Successful!</p>
+                        <pre>${JSON.stringify(data, null, 2)}</pre>
+                    `;
+                    resultDiv.className = 'test-result success';
+                } else {
+                    const data = await response.json();
+                    resultDiv.innerHTML = `
+                        <p>❌ API Connection Failed</p>
+                        <p>Status: ${response.status} ${response.statusText}</p>
+                        <pre>${JSON.stringify(data, null, 2)}</pre>
+                    `;
+                    resultDiv.className = 'test-result error';
+                }
+            } catch (error) {
+                console.error('API test error:', error);
+                resultDiv.innerHTML = `
+                    <p>❌ API Connection Error</p>
+                    <p>Error: ${error.message}</p>
+                    <p>This usually means the API endpoint is not available or there's a CORS issue.</p>
+                `;
+                resultDiv.className = 'test-result error';
+            }
+        }
+
+        // Test Stripe checkout session creation
+        async function testStripeCheckout() {
+            const resultDiv = document.getElementById('stripe-result');
+            resultDiv.innerHTML = 'Testing Stripe checkout session creation...';
+            resultDiv.className = 'test-result info';
+
+            try {
+                const backendUrl = getBackendUrl();
+                const testData = {
+                    amount: 50, // €50 test amount
+                    customerInfo: {
+                        email: 'test@example.com',
+                        name: 'Test Customer',
+                        address: '123 Test Street',
+                        city: 'Test City',
+                        country: 'IE',
+                        postalCode: '12345',
+                        phone: '123-456-7890'
+                    },
+                    cart: [
+                        {
+                            id: 'test-product',
+                            name: 'Test Product',
+                            price: 50,
+                            quantity: 1,
+                            size: 'M'
+                        }
+                    ]
+                };
+
+                const response = await fetch(`${backendUrl}/api/create-checkout-session`, {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify(testData)
+                });
+
+                if (response.ok) {
+                    const data = await response.json();
+                    if (data.url) {
+                        resultDiv.innerHTML = `
+                            <p>✅ Stripe Checkout Session Created Successfully!</p>
+                            <p>Session URL: ${data.url}</p>
+                            <p>Note: This is a real Stripe session, but don't worry - it's using test data.</p>
+                        `;
+                        resultDiv.className = 'test-result success';
+                    } else {
+                        resultDiv.innerHTML = `
+                            <p>❌ Stripe Checkout Session Creation Failed</p>
+                            <p>Response: ${JSON.stringify(data, null, 2)}</p>
+                        `;
+                        resultDiv.className = 'test-result error';
+                    }
+                } else {
+                    const errorText = await response.text();
+                    resultDiv.innerHTML = `
+                        <p>❌ Stripe Checkout Session Creation Failed</p>
+                        <p>Status: ${response.status} ${response.statusText}</p>
+                        <p>Response: ${errorText}</p>
+                    `;
+                    resultDiv.className = 'test-result error';
+                }
+            } catch (error) {
+                resultDiv.innerHTML = `
+                    <p>❌ Stripe Checkout Session Creation Error</p>
+                    <p>Error: ${error.message}</p>
+                `;
+                resultDiv.className = 'test-result error';
+            }
+        }
+
+        // Test environment variables
+        async function testEnvironmentVars() {
+            const resultDiv = document.getElementById('env-vars-result');
+            resultDiv.innerHTML = 'Checking environment variables...';
+            resultDiv.className = 'test-result info';
+
+            try {
+                const backendUrl = getBackendUrl();
+                const response = await fetch(`${backendUrl}/api/test`, {
+                    method: 'GET',
+                    headers: { 'Content-Type': 'application/json' }
+                });
+
+                if (response.ok) {
+                    const data = await response.json();
+                    resultDiv.innerHTML = `
+                        <p>✅ Environment variables are configured!</p>
+                        <p>Environment: ${data.environment}</p>
+                        <p>Timestamp: ${data.timestamp}</p>
+                        <p>Note: Actual environment variable values are hidden for security.</p>
+                    `;
+                    resultDiv.className = 'test-result success';
+                } else {
+                    resultDiv.innerHTML = `
+                        <p>❌ Cannot check environment variables</p>
+                        <p>Status: ${response.status}</p>
+                    `;
+                    resultDiv.className = 'test-result error';
+                }
+            } catch (error) {
+                resultDiv.innerHTML = `
+                    <p>❌ Environment variables check failed</p>
+                    <p>Error: ${error.message}</p>
+                `;
+                resultDiv.className = 'test-result error';
+            }
+        }
+
+        // Test full payment flow
+        async function testFullPaymentFlow() {
+            const resultDiv = document.getElementById('payment-flow-result');
+            resultDiv.innerHTML = 'Testing complete payment flow...';
+            resultDiv.className = 'test-result info';
+
+            let steps = [];
+            
+            try {
+                // Step 1: Test API connection
+                steps.push('1. Testing API connection...');
+                const backendUrl = getBackendUrl();
+                const apiResponse = await fetch(`${backendUrl}/api/test`);
+                if (apiResponse.ok) {
+                    steps.push('   ✅ API connection successful');
+                } else {
+                    steps.push('   ❌ API connection failed');
+                    throw new Error('API connection failed');
+                }
+
+                // Step 2: Test Stripe checkout session
+                steps.push('2. Testing Stripe checkout session...');
+                const checkoutResponse = await fetch(`${backendUrl}/api/create-checkout-session`, {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({
+                        amount: 25,
+                        customerInfo: {
+                            email: 'test@example.com',
+                            name: 'Test Customer',
+                            address: '123 Test St',
+                            city: 'Test City',
+                            country: 'IE',
+                            postalCode: '12345',
+                            phone: '123-456-7890'
+                        },
+                        cart: [{ id: 'test', name: 'Test Product', price: 25, quantity: 1 }]
+                    })
+                });
+
+                if (checkoutResponse.ok) {
+                    const checkoutData = await checkoutResponse.json();
+                    if (checkoutData.url) {
+                        steps.push('   ✅ Stripe checkout session created successfully');
+                        steps.push('3. ✅ Payment flow is working correctly!');
+                        
+                        resultDiv.innerHTML = `
+                            <p>✅ Full Payment Flow Test Passed!</p>
+                            <pre>${steps.join('\n')}</pre>
+                            <p><strong>Your payment system is working correctly!</strong></p>
+                        `;
+                        resultDiv.className = 'test-result success';
+                    } else {
+                        steps.push('   ❌ Stripe checkout session creation failed');
+                        throw new Error('Stripe checkout session creation failed');
+                    }
+                } else {
+                    steps.push('   ❌ Stripe checkout session request failed');
+                    throw new Error('Stripe checkout session request failed');
+                }
+
+            } catch (error) {
+                steps.push(`❌ Payment flow test failed: ${error.message}`);
+                resultDiv.innerHTML = `
+                    <p>❌ Payment Flow Test Failed</p>
+                    <pre>${steps.join('\n')}</pre>
+                    <p>Error: ${error.message}</p>
+                `;
+                resultDiv.className = 'test-result error';
+            }
+        }
+
+        // Show debug information
+        function showDebugInfo() {
+            const resultDiv = document.getElementById('debug-info');
+            
+            const debugInfo = {
+                'Current URL': window.location.href,
+                'Hostname': window.location.hostname,
+                'Protocol': window.location.protocol,
+                'Port': window.location.port,
+                'Backend URL': getBackendUrl(),
+                'User Agent': navigator.userAgent,
+                'Environment': window.location.hostname.includes('vercel.app') || window.location.hostname === 'papasfashion.com' ? 'Production (Vercel)' : 'Development/Local',
+                'Timestamp': new Date().toISOString()
+            };
+
+            resultDiv.innerHTML = `
+                <p>🔍 Debug Information:</p>
+                <pre>${JSON.stringify(debugInfo, null, 2)}</pre>
+            `;
+            resultDiv.className = 'test-result info';
+        }
+    </script>
+</body>
+</html>
