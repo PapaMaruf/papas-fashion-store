@@ -1,0 +1,745 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>My Website</title>
+    <link rel="stylesheet" href="styles/main.css">
+    <link href="https://fonts.googleapis.com/css2?family=Bebas+Neue&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+</head>
+<body>
+    <header>
+        <!-- Hamburger menu button -->
+        <button id="menu-btn" class="menu-btn" aria-label="Open navigation">
+            <span></span>
+            <span></span>
+            <span></span>
+        </button>
+        <div class="header-brand">
+            <span>PAPA'S FASHION</span>
+            <img src="images/papasfashionlogo.png" alt="Papa's Fashion Logo" class="brand-logo" />
+        </div>
+        <div class="header-actions">
+            <button class="contact-btn" onclick="window.location.href='contact.html'">
+                <i class="fas fa-envelope"></i> <span>Contact Us</span>
+            </button>
+        </div>
+    </header>
+    <!-- Navigation menu -->
+    <nav id="side-nav" class="side-nav">
+        <ul>
+            <li>
+                <a href="#home" id="nav-home">
+                    <!-- Home SVG icon -->
+                    <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" style="vertical-align:middle;margin-right:6px;" viewBox="0 0 24 24" fill="none" stroke="#333" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                        <path d="M3 9l9-7 9 7"></path>
+                        <path d="M9 22V12h6v10"></path>
+                    </svg>
+                    Home
+                </a>
+            </li>
+            <li><a href="#sneakers" id="nav-sneakers">Sneakers</a></li>
+            <li><a href="#sweaters" id="nav-sweaters">Sweaters</a></li>
+            <li><a href="#jerseys" id="nav-jerseys">Football Jerseys</a></li>
+            <li><a href="#beanies" id="nav-beanies">Beanies</a></li>
+        </ul>
+    </nav>
+    <main>
+        <section id="home">
+            <!-- Hero Section -->
+            <div class="hero-section">
+                <div class="hero-content">
+                    <h1 class="hero-title">PAPA'S FASHION</h1>
+                    <p class="hero-subtitle">Premium streetwear & sportswear for the modern lifestyle</p>
+                    <div class="hero-buttons">
+                        <button class="hero-btn primary" onclick="showSection('sneakers')">Shop Sneakers</button>
+                        <button class="hero-btn secondary" onclick="showSection('jerseys')">New Jerseys</button>
+                    </div>
+                </div>
+                <div class="hero-image">
+                    <img src="images/asicsgelnyc-creamarcticsky1.webp" alt="Featured Product" class="hero-product-img">
+                </div>
+            </div>
+
+            <!-- Bestsellers Section -->
+            <div class="bestsellers-section">
+                <h2 class="section-title">🔥 BESTSELLERS</h2>
+                <div class="bestsellers-grid">
+                    <div class="bestseller-card" onclick="window.location.href='product-asicsgelnyc-creamarcticsky.html'">
+                        <div class="bestseller-badge">#1</div>
+                        <img src="images/asicsgelnyc-creamarcticsky1.webp" alt="Asics Gel-NYC Cream Arctic Sky" class="bestseller-img">
+                        <h3 class="bestseller-title">Asics Gel-NYC Cream Arctic Sky</h3>
+                        <div class="bestseller-price">
+                            <span class="old-price">€249,95</span>
+                            <span class="new-price">€84,95</span>
+                        </div>
+                    </div>
+                    <div class="bestseller-card" onclick="window.location.href='product-fcbarcelona-limitededitionbarcelonacity.html'">
+                        <div class="bestseller-badge">#2</div>
+                        <img src="images/fcbarcelona-limitededitionbarcelonacity1.jpg" alt="FC Barcelona Limited Edition" class="bestseller-img">
+                        <h3 class="bestseller-title">FC Barcelona Limited Edition</h3>
+                        <div class="bestseller-price">
+                            <span class="old-price">€79,95</span>
+                            <span class="new-price">€29,95</span>
+                        </div>
+                    </div>
+                    <div class="bestseller-card" onclick="window.location.href='product-ami-paris-black.html'">
+                        <div class="bestseller-badge">#3</div>
+                        <img src="images/ami-paris-black1.webp" alt="Ami Paris Black Sweater" class="bestseller-img">
+                        <h3 class="bestseller-title">Ami Paris Black Sweater</h3>
+                        <div class="bestseller-price">
+                            <span class="old-price">€129,95</span>
+                            <span class="new-price">€49,95</span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Features Section -->
+            <div class="features-section">
+                <div class="features-grid">
+                    <div class="feature-card">
+                        <div class="feature-icon">🚚</div>
+                        <h3>Free Shipping</h3>
+                        <p>Free shipping available on orders over €40-€90 (depends on location)</p>
+                    </div>
+                    <div class="feature-card">
+                        <div class="feature-icon">↩️</div>
+                        <h3>Easy Returns</h3>
+                        <p>14-day return policy with simple process</p>
+                    </div>
+                    <div class="feature-card">
+                        <div class="feature-icon">🔒</div>
+                        <h3>Secure Payment</h3>
+                        <p>SSL encrypted secure checkout with Stripe</p>
+                    </div>
+                    <div class="feature-card">
+                        <div class="feature-icon">⭐</div>
+                        <h3>Premium Quality</h3>
+                        <p>Guaranteed quality and craftsmanship</p>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Quick Categories -->
+            <div class="quick-categories">
+                <h2 class="section-title">SHOP BY CATEGORY</h2>
+                <div class="categories-grid">
+                    <div class="category-card" onclick="showSection('sneakers')">
+                        <img src="images/asicsgelnyc-yankees1.jpg" alt="Sneakers" class="category-img">
+                        <div class="category-overlay">
+                            <h3>SNEAKERS</h3>
+                            <p>Premium Asics Collection</p>
+                        </div>
+                    </div>
+                    <div class="category-card" onclick="showSection('sweaters')">
+                        <img src="images/ami-paris-white1.webp" alt="Sweaters" class="category-img">
+                        <div class="category-overlay">
+                            <h3>SWEATERS</h3>
+                            <p>Luxury Ami Paris</p>
+                        </div>
+                    </div>
+                    <div class="category-card" onclick="showSection('jerseys')">
+                        <img src="images/realmadrid-limitededitionreddragon1.jpg" alt="Jerseys" class="category-img">
+                        <div class="category-overlay">
+                            <h3>JERSEYS</h3>
+                            <p>Limited Edition Football</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Newsletter Section -->
+            <div class="newsletter-section">
+                <div class="newsletter-content">
+                    <h2>STAY IN THE LOOP</h2>
+                    <p>Get exclusive access to new drops, sales, and style updates</p>
+                    <div class="newsletter-form">
+                        <input type="email" placeholder="Enter your email address" class="newsletter-input" id="newsletter-email">
+                        <button class="newsletter-btn" onclick="handleNewsletterSignup()">SUBSCRIBE</button>
+                    </div>
+                    <p class="newsletter-disclaimer">We respect your privacy. Unsubscribe at any time.</p>
+                </div>
+            </div>
+        </section>
+        <section id="sneakers">
+            <h2>Sneakers</h2>
+            <div class="product-grid">
+                <div class="product">
+                    <a href="product-asicsgelnyc-creamarcticsky.html" style="display:block;text-decoration:none;color:inherit;">
+                        <img src="images/asicsgelnyc-creamarcticsky1.webp" alt="Asics Gel-NYC Cream Arctic Sky" class="main-product-img" style="cursor:pointer;transition:opacity 0.3s;">
+                        <h3 class="product-title" style="cursor:pointer;">Asics Gel-NYC Cream Arctic Sky</h3>
+                    </a>
+                    <div class="product-price">
+                        <span class="old-price">€249,95</span>
+                        <span class="new-price">€84,95</span>
+                    </div>
+                    <div class="product-thumbs">
+                        <img src="images/asicsgelnyc-creamarcticsky1.webp" alt="Asics Gel-NYC Side" class="thumb-img selected" onclick="updateMainImage('images/asicsgelnyc-creamarcticsky1.webp', this.closest('.product'))">
+                        <img src="images/asicsgelnyc-creamarcticsky2.webp" alt="Asics Gel-NYC Top" class="thumb-img" onclick="updateMainImage('images/asicsgelnyc-creamarcticsky2.webp', this.closest('.product'))">
+                    </div>
+                </div>
+                <div class="product">
+                    <a href="product-asicsgelnyc-ivoryclaygrey.html" style="display:block;text-decoration:none;color:inherit;">
+                        <img src="images/asicsgelnyc-ivoryclaygrey1.webp" alt="Asics Gel-NYC Ivory Clay Grey" class="main-product-img" style="cursor:pointer;transition:opacity 0.3s;">
+                        <h3 class="product-title" style="cursor:pointer;">Asics Gel-NYC Ivory Clay Grey</h3>
+                    </a>
+                    <div class="product-price">
+                        <span class="old-price">€249,95</span>
+                        <span class="new-price">€84,95</span>
+                    </div>
+                    <div class="product-thumbs">
+                        <img src="images/asicsgelnyc-ivoryclaygrey1.webp" alt="Asics Gel-NYC Side" class="thumb-img selected" onclick="updateMainImage('images/asicsgelnyc-ivoryclaygrey1.webp', this.closest('.product'))">
+                        <img src="images/asicsgelnyc-ivoryclaygrey2.webp" alt="Asics Gel-NYC Top" class="thumb-img" onclick="updateMainImage('images/asicsgelnyc-ivoryclaygrey2.webp', this.closest('.product'))">
+                    </div>
+                </div>
+                <div class="product">
+                    <a href="product-asicsgelnyc-yankees.html" style="display:block;text-decoration:none;color:inherit;">
+                        <img src="images/asicsgelnyc-yankees1.jpg" alt="Asics Gel-NYC Yankees" class="main-product-img" style="cursor:pointer;transition:opacity 0.3s;">
+                        <h3 class="product-title" style="cursor:pointer;">Asics Gel-NYC Yankees</h3>
+                    </a>
+                    <div class="product-price">
+                        <span class="old-price">€249,95</span>
+                        <span class="new-price">€84,95</span>
+                    </div>
+                    <div class="product-thumbs">
+                        <img src="images/asicsgelnyc-yankees1.jpg" alt="Asics Gel-NYC Side" class="thumb-img selected" onclick="updateMainImage('images/asicsgelnyc-yankees1.jpg', this.closest('.product'))">
+                        <img src="images/asicsgelnyc-yankees2.jpg" alt="Asics Gel-NYC Top" class="thumb-img" onclick="updateMainImage('images/asicsgelnyc-yankees2.jpg', this.closest('.product'))">
+                    </div>
+                </div>
+                <div class="product">
+                    <a href="product-asicsgelnyc-blackgraphitegrey.html" style="display:block;text-decoration:none;color:inherit;">
+                        <img src="images/asicsgelnyc-blackgraphitegrey1.jpg" alt="Asics Gel-NYC Black Graphite Grey" class="main-product-img" style="cursor:pointer;transition:opacity 0.3s;">
+                        <h3 class="product-title" style="cursor:pointer;">Asics Gel-NYC Black Graphite Grey</h3>
+                    </a>
+                    <div class="product-price">
+                        <span class="old-price">€249,95</span>
+                        <span class="new-price">€84,95</span>
+                    </div>
+                    <div class="product-thumbs">
+                        <img src="images/asicsgelnyc-blackgraphitegrey1.jpg" alt="Asics Gel-NYC Side" class="thumb-img selected" onclick="updateMainImage('images/asicsgelnyc-blackgraphitegrey1.jpg', this.closest('.product'))">
+                        <img src="images/asicsgelnyc-blackgraphitegrey2.jpg" alt="Asics Gel-NYC Top" class="thumb-img" onclick="updateMainImage('images/asicsgelnyc-blackgraphitegrey2.jpg', this.closest('.product'))">
+                    </div>
+                </div>
+            </div>
+        </section>
+        <section id="sweaters">
+            <h2>Sweaters</h2>
+            <div class="product-grid">
+                <div class="product">
+                    <a href="product-ami-paris-white.html" style="display:block;">
+                        <img src="images/ami-paris-white1.webp" alt="Ami Paris Ami de Coeur White" class="main-product-img" style="cursor:pointer;">
+                    </a>
+                    <a href="product-ami-paris-white.html" style="text-decoration:none;color:inherit;">
+                        <h3 class="product-title" style="cursor:pointer;">Ami Paris Sweater</h3>
+                    </a>
+                    <div class="product-price">
+                        <span class="old-price">€129,95</span>
+                        <span class="new-price">€49,95</span>
+                    </div>
+                    <div class="product-thumbs">
+                        <img src="images/ami-paris-white1.webp" alt="Ami Paris Sweater Side" class="thumb-img selected" onclick="updateMainImage('images/ami-paris-white1.webp', this.closest('.product'))">
+                        <img src="images/ami-paris-white2.webp" alt="Ami Paris Sweater Front" class="thumb-img" onclick="updateMainImage('images/ami-paris-white2.webp', this.closest('.product'))">
+                    </div>
+                </div>
+                <div class="product">
+                    <a href="product-ami-paris-black.html" style="display:block;">
+                        <img src="images/ami-paris-black1.webp" alt="Ami Paris Ami de Coeur Black" class="main-product-img" style="cursor:pointer;">
+                    </a>
+                    <a href="product-ami-paris-black.html" style="text-decoration:none;color:inherit;">
+                        <h3 class="product-title" style="cursor:pointer;">Ami Paris Sweater</h3>
+                    </a>
+                    <div class="product-price">
+                        <span class="old-price">€129,95</span>
+                        <span class="new-price">€49,95</span>
+                    </div>
+                    <div class="product-thumbs">
+                        <img src="images/ami-paris-black1.webp" alt="Ami Paris Sweater Black Side" class="thumb-img selected" onclick="updateMainImage('images/ami-paris-black1.webp', this.closest('.product'))">
+                        <img src="images/ami-paris-black2.webp" alt="Ami Paris Sweater Black Front" class="thumb-img" onclick="updateMainImage('images/ami-paris-black2.webp', this.closest('.product'))">
+                    </div>
+                </div>
+            </div>
+        </section>
+        <section id="jerseys">
+            <h2>Football Jerseys</h2>
+            <div class="product-grid">
+                <div class="product">
+                    <a href="product-fcbarcelona-limitededitionbarcelonacity.html" style="display:block;text-decoration:none;color:inherit;">
+                        <img src="images/fcbarcelona-limitededitionbarcelonacity1.jpg" alt="FC Barcelona Limited Edition 'Barcelona City'" class="main-product-img" style="cursor:pointer;transition:opacity 0.3s;">
+                        <h3 class="product-title" style="cursor:pointer;">FC Barcelona Limited Edition 'Barcelona City'</h3>
+                    </a>
+                    <div class="product-price">
+                        <span class="old-price">€79,95</span>
+                        <span class="new-price">€29,95</span>
+                    </div>
+                    <div class="product-thumbs">
+                        <img src="images/fcbarcelona-limitededitionbarcelonacity1.jpg" alt="FC Barcelona Front" class="thumb-img selected" onclick="updateMainImage('images/fcbarcelona-limitededitionbarcelonacity1.jpg', this.closest('.product'))">
+                        <img src="images/fcbarcelona-limitededitionbarcelonacity2.jpg" alt="FC Barcelona Back" class="thumb-img" onclick="updateMainImage('images/fcbarcelona-limitededitionbarcelonacity2.jpg', this.closest('.product'))">
+                    </div>
+                </div>
+                <div class="product">
+                    <a href="product-realmadrid-limitededitionreddragon.html" style="display:block;text-decoration:none;color:inherit;">
+                        <img src="images/realmadrid-limitededitionreddragon1.jpg" alt="Real Madrid Limited Edition 'Red Dragon'" class="main-product-img" style="cursor:pointer;transition:opacity 0.3s;">
+                        <h3 class="product-title" style="cursor:pointer;">Real Madrid Limited Edition 'Red Dragon'</h3>
+                    </a>
+                    <div class="product-price">
+                        <span class="old-price">€79,95</span>
+                        <span class="new-price">€29,95</span>
+                    </div>
+                    <div class="product-thumbs">
+                        <img src="images/realmadrid-limitededitionreddragon1.jpg" alt="Real Madrid Front" class="thumb-img selected" onclick="updateMainImage('images/realmadrid-limitededitionreddragon1.jpg', this.closest('.product'))">
+                        <img src="images/realmadrid-limitededitionreddragon2.jpg" alt="Real Madrid Back" class="thumb-img" onclick="updateMainImage('images/realmadrid-limitededitionreddragon2.jpg', this.closest('.product'))">
+                    </div>
+                </div>
+                <div class="product">
+                    <a href="product-portugal-limitededitionlv.html" style="display:block;text-decoration:none;color:inherit;">
+                        <img src="images/portugal-limitededitionlv1.webp" alt="Portugal Limited Edition 'Nike x LV'" class="main-product-img" style="cursor:pointer;transition:opacity 0.3s;">
+                        <h3 class="product-title" style="cursor:pointer;">Portugal Limited Edition 'Nike x LV'</h3>
+                    </a>
+                    <div class="product-price">
+                        <span class="old-price">€99,95</span>
+                        <span class="new-price">€29,95</span>
+                    </div>
+                    <div class="product-thumbs">
+                        <img src="images/portugal-limitededitionlv1.webp" alt="Portugal Front" class="thumb-img selected" onclick="updateMainImage('images/portugal-limitededitionlv1.webp', this.closest('.product'))">
+                        <img src="images/portugal-limitededitionlv2.webp" alt="Portugal Back" class="thumb-img" onclick="updateMainImage('images/portugal-limitededitionlv2.webp', this.closest('.product'))">
+                    </div>
+                </div>
+            </div>
+        </section>
+        <section id="beanies">
+            <h2>Beanies</h2>
+            <div style="text-align: center; padding: 4rem 2rem; margin: 2rem 0;">
+                <div style="font-size: 3.5rem; font-weight: bold; background: linear-gradient(135deg, #667eea 0%, #764ba2 100%); -webkit-background-clip: text; -webkit-text-fill-color: transparent; background-clip: text; margin-bottom: 1rem; font-family: 'Bebas Neue', cursive;">
+                    COMING SOON...
+                </div>
+                <p style="font-size: 1.2rem; color: #666; margin: 0;">
+                    Stay tuned for our exclusive beanie collection!
+                </p>
+            </div>
+        </section>
+        <section id="cart" style="display:none">
+            <h2>Shopping Cart</h2>
+            <div id="cart-items"></div>
+            <div id="cart-empty" style="text-align:center;color:#888;margin:2rem 0;">Your cart is empty.</div>
+            <div id="cart-summary" style="border-top:1px solid #eee;padding-top:1rem;margin-top:1rem;display:none;">
+                <div style="display:flex;justify-content:space-between;font-size:1.1rem;font-weight:600;">
+                    <span>Subtotal:</span>
+                    <span id="cart-subtotal">€0.00</span>
+                </div>
+            </div>
+            <button class="cart-payment-btn" id="checkout-btn">CHECKOUT</button>
+        </section>
+        <section id="checkout" style="display:none;max-width:500px;margin:2rem auto 2rem auto;padding:2rem 1.5rem;background:#fff;border-radius:14px;box-shadow:0 2px 12px rgba(0,0,0,0.08);">
+            <h2 style="text-align:center;margin-bottom:1.5rem;">Checkout</h2>
+            <div id="checkout-summary"></div>
+            <form id="checkout-form" style="margin-top:2rem;">
+                <div style="margin-bottom:1.2rem;">
+                    <label for="buyer-country" style="display:block;font-weight:600;margin-bottom:0.4em;">Country/Region</label>
+                    <select id="buyer-country" name="buyer-country" required style="width:100%;padding:0.7em;border-radius:7px;border:1.5px solid #bbb;font-size:1.1em;">
+                        <option value="Belgium">Belgium</option>
+                        <option value="Netherlands">Netherlands</option>
+                        <option value="France">France</option>
+                        <option value="Germany">Germany</option>
+                        <option value="Luxembourg">Luxembourg</option>
+                    </select>
+                </div>
+                <div style="margin-bottom:1.2rem;display:flex;gap:1.2rem;">
+                    <div style="flex:3;">
+                        <label for="buyer-address" style="display:block;font-weight:600;margin-bottom:0.4em;">Address</label>
+                        <input type="text" id="buyer-address" name="buyer-address" required autocomplete="off" style="width:100%;padding:0.7em;border-radius:7px;border:1.5px solid #bbb;font-size:1.1em;" pattern="[A-Za-zÀ-ÿ\s.'-]+" title="Please enter a valid street name (letters only)">
+                    </div>
+                    <div style="flex:1;">
+                        <label for="buyer-housenumber" style="display:block;font-weight:600;margin-bottom:0.4em;">House Number</label>
+                        <input type="text" id="buyer-housenumber" name="buyer-housenumber" required style="width:100%;padding:0.7em;border-radius:7px;border:1.5px solid #bbb;font-size:1.1em;">
+                    </div>
+                </div>
+                <div style="margin-bottom:1.2rem;">
+                    <label for="buyer-postbox" style="display:block;font-weight:600;margin-bottom:0.4em;">Post Box Number (optional)</label>
+                    <input type="text" id="buyer-postbox" name="buyer-postbox" style="width:100%;padding:0.7em;border-radius:7px;border:1.5px solid #bbb;font-size:1.1em;">
+                </div>
+                <div style="margin-bottom:1.2rem;display:flex;gap:1.2rem;">
+                    <div style="flex:1;">
+                        <label for="buyer-postal" style="display:block;font-weight:600;margin-bottom:0.4em;">Postal Code</label>
+                        <input type="text" id="buyer-postal" name="buyer-postal" required style="width:100%;padding:0.7em;border-radius:7px;border:1.5px solid #bbb;font-size:1.1em;">
+                    </div>
+                    <div style="flex:2;">
+                        <label for="buyer-city" style="display:block;font-weight:600;margin-bottom:0.4em;">City</label>
+                        <input type="text" id="buyer-city" name="buyer-city" required style="width:100%;padding:0.7em;border-radius:7px;border:1.5px solid #bbb;font-size:1.1em;" pattern="[A-Za-zÀ-ÿ\s.'-]+" title="Please enter a valid city name (letters only)">
+                    </div>
+                </div>
+                <div id="shipping-info" style="margin-bottom:1.2rem;font-size:1.08em;color:#0078ff;display:none;"></div>
+                <div style="margin-bottom:1.2rem;">
+                    <label for="buyer-name" style="display:block;font-weight:600;margin-bottom:0.4em;">Name</label>
+                    <input type="text" id="buyer-name" name="buyer-name" required style="width:100%;padding:0.7em;border-radius:7px;border:1.5px solid #bbb;font-size:1.1em;" placeholder="e.g. John Doe" />
+                </div>
+                <div style="margin-bottom:1.2rem;">
+                    <label for="buyer-email" style="display:block;font-weight:600;margin-bottom:0.4em;">Email</label>
+                    <input type="email" id="buyer-email" name="buyer-email" required style="width:100%;padding:0.7em;border-radius:7px;border:1.5px solid #bbb;font-size:1.1em;" placeholder="e.g. john@email.com" />
+                </div>
+                <div style="margin-bottom:1.2rem;">
+                    <label for="buyer-phone" style="display:block;font-weight:600;margin-bottom:0.4em;">Phone Number</label>
+                    <input type="tel" id="buyer-phone" name="buyer-phone" required style="width:100%;padding:0.7em;border-radius:7px;border:1.5px solid #bbb;font-size:1.1em;" placeholder="e.g. +32 123 456 789" />
+                </div>
+                <div style="margin-bottom:1.2rem;">
+                    <label style="display:block;font-weight:600;margin-bottom:0.4em;">Payment Method</label>
+                    <select id="payment-method" name="payment-method" required style="width:100%;padding:0.7em;border-radius:7px;border:1.5px solid #bbb;font-size:1.1em;">
+                        <option value="card">Credit/Debit Card</option>
+                        <option value="paypal">PayPal</option>
+                        <option value="applepay">Apple Pay</option>
+                        <option value="googlepay">Google Pay</option>
+                    </select>
+                </div>
+                <button type="submit" id="complete-payment-btn" style="width:100%;padding:1.2em 0;background:linear-gradient(135deg, #3b82f6 0%, #1d4ed8 100%);color:#fff;font-size:1.2em;border:none;border-radius:16px;font-weight:700;cursor:pointer;margin-top:1.5rem;box-shadow:0 8px 24px rgba(59, 130, 246, 0.25);transition:all 0.3s ease;font-family:'Plus Jakarta Sans', sans-serif;text-transform:uppercase;letter-spacing:0.5px;">
+                    Complete Payment
+                </button>
+            </form>
+        </section>
+    </main>
+    <footer>
+        <div class="footer-content">
+            <div class="footer-section">
+                <h3>Papa's Fashion</h3>
+                <p>Premium fashion for the modern lifestyle</p>
+            </div>
+            <div class="footer-section">
+                <h4>Quick Links</h4>
+                <ul>
+                    <li><a href="index.html">Home</a></li>
+                    <li><a href="return-policy.html">Return Policy</a></li>
+                    <li><a href="contact.html">Contact Us</a></li>
+                </ul>
+            </div>
+            <div class="footer-section">
+                <h4>Follow Us</h4>
+                <div class="social-links">
+                    <a href="https://instagram.com/papasfashion9k" target="_blank">📱 Instagram</a>
+                    <a href="https://snapchat.com/add/papasfashion9k" target="_blank">👻 Snapchat</a>
+                    <a href="https://tiktok.com/@papasfashion9k" target="_blank">🎵 TikTok</a>
+                </div>
+            </div>
+        </div>
+        <div class="footer-bottom">
+            <p>&copy; 2025 Papa's Fashion. All rights reserved.</p>
+        </div>
+    </footer>
+    <script>
+      // Google Places Autocomplete callback for Google Maps API
+      function initGooglePlacesAutocomplete() {
+        var addressInput = document.getElementById('buyer-address');
+        var buyerCountry = document.getElementById('buyer-country');
+        var autocomplete;
+        function setAutocompleteCountry(country) {
+          if (!addressInput || !window.google || !window.google.maps || !window.google.maps.places) return;
+          if (autocomplete) {
+            autocomplete.setComponentRestrictions({ country: country });
+          }
+        }
+        if (addressInput && window.google && window.google.maps && window.google.maps.places) {
+          var countryCodeMap = {
+            'Belgium': 'be',
+            'Netherlands': 'nl',
+            'France': 'fr',
+            'Germany': 'de',
+            'Luxembourg': 'lu'
+          };
+          autocomplete = new google.maps.places.Autocomplete(addressInput, {
+            types: ['address'],
+            componentRestrictions: { country: countryCodeMap[buyerCountry.value] }
+          });
+          autocomplete.addListener('place_changed', function() {
+            var place = autocomplete.getPlace();
+            if (!place.address_components) return;
+            var postal = '', city = '', street = '', houseNumber = '';
+            place.address_components.forEach(function(component) {
+              if (component.types.includes('postal_code')) {
+                postal = component.long_name;
+              }
+              if (component.types.includes('locality')) {
+                city = component.long_name;
+              }
+              if (!city && component.types.includes('administrative_area_level_2')) {
+                city = component.long_name;
+              }
+              if (!city && component.types.includes('administrative_area_level_1')) {
+                city = component.long_name;
+              }
+              if (component.types.includes('route')) {
+                street = component.long_name;
+              }
+              if (component.types.includes('street_number')) {
+                houseNumber = component.long_name;
+              }
+            });
+            // Set address (street only), house number, city, postal
+            if (street) document.getElementById('buyer-address').value = street;
+            if (houseNumber) document.getElementById('buyer-housenumber').value = houseNumber;
+            if (postal) document.getElementById('buyer-postal').value = postal;
+            if (city) document.getElementById('buyer-city').value = city;
+          });
+          if (buyerCountry) {
+            buyerCountry.addEventListener('change', function() {
+              setAutocompleteCountry(countryCodeMap[buyerCountry.value]);
+              addressInput.value = '';
+              document.getElementById('buyer-postal').value = '';
+              document.getElementById('buyer-city').value = '';
+            });
+          }
+        }
+      }
+      // Wait for both DOM and Google Maps API to be ready
+      function waitForGoogleMapsAndDOM() {
+        if (document.readyState === 'complete' || document.readyState === 'interactive') {
+          if (window.google && window.google.maps && window.google.maps.places) {
+            initGooglePlacesAutocomplete();
+          } else {
+            setTimeout(waitForGoogleMapsAndDOM, 100);
+          }
+        } else {
+          document.addEventListener('DOMContentLoaded', waitForGoogleMapsAndDOM);
+        }
+      }
+      waitForGoogleMapsAndDOM();
+    </script>
+    <script src="https://maps.googleapis.com/maps/api/js?key=AIzaSyDF8grzuGGPtHrUEkxG35hF-X7d7fQ53pk&libraries=places" async defer></script>
+    <script src="scripts/main.js"></script>
+    <script>
+        // --- CHECKOUT LOGIC ---
+document.addEventListener('DOMContentLoaded', function() {
+  const checkoutBtn = document.getElementById('checkout-btn');
+  const cartSection = document.getElementById('cart');
+  const checkoutSection = document.getElementById('checkout');
+  const checkoutSummary = document.getElementById('checkout-summary');
+  const cartItemsDiv = document.getElementById('cart-items');
+  const cartEmptyDiv = document.getElementById('cart-empty');
+  const buyerCountry = document.getElementById('buyer-country');
+  const shippingInfo = document.getElementById('shipping-info');
+  let cart = JSON.parse(localStorage.getItem('cart') || '[]');
+
+  function getShippingCost(country, total) {
+    if (country === 'Belgium') return total >= 40 ? 0 : 5;
+    if (["Netherlands", "France", "Germany", "Luxembourg"].includes(country)) {
+      return total >= 90 ? 0 : 8;
+    }
+    return 0;
+  }
+
+  function updateShippingInfoAndSummary() {
+    if (!buyerCountry || !shippingInfo) return;
+    const country = buyerCountry.value;
+    let cart = JSON.parse(localStorage.getItem('cart') || '[]');
+    
+    // Calculate correct total based on product types
+    let total = cart.reduce((sum, item) => {
+      let price = 49.95; // Default price for Ami Paris sweaters
+      let quantity = item.qty || item.quantity || 1;
+      
+      // Use the item's price if available (new cart structure)
+      if (item.price) {
+        price = item.price;
+      } else {
+        // Fallback to product name detection (old cart structure)
+        if (item.name.toLowerCase().includes('asics')) {
+          price = 84.95; // Asics shoes price
+        } else if (item.name.toLowerCase().includes('barcelona')) {
+          price = 29.95; // FC Barcelona jersey price
+        } else if (item.name.toLowerCase().includes('real madrid')) {
+          price = 29.95; // Real Madrid jersey price
+        } else if (item.name.toLowerCase().includes('portugal')) {
+          price = 29.95; // Portugal jersey price
+        }
+      }
+      
+      // Ensure price and quantity are valid numbers
+      if (isNaN(price)) price = 49.95; // fallback price
+      if (isNaN(quantity)) quantity = 1; // fallback quantity
+      
+      return sum + price * quantity;
+    }, 0);
+    
+    // Ensure total is a valid number
+    if (isNaN(total)) total = 0;
+    
+    let shipping = getShippingCost(country, total);
+
+    // Update shipping info line
+    if (country === 'Belgium') {
+      if (shipping === 0) {
+        shippingInfo.textContent = 'Free Shipping';
+        shippingInfo.style.color = '#4CAF50';
+      } else {
+        const amountLeft = 40 - total;
+        shippingInfo.innerHTML = `<span style=\"color:#d32f2f;font-weight:600;\">€5 shipping cost</span> <span style=\"color:#0078ff;font-weight:500;\">&nbsp;· Spend <b>€${amountLeft.toFixed(2)}</b> more for free shipping!</span>`;
+        shippingInfo.style.color = '';
+      }
+      shippingInfo.style.display = 'block';
+    } else if (["Netherlands", "France", "Germany", "Luxembourg"].includes(country)) {
+      if (shipping === 0) {
+        shippingInfo.textContent = 'Free Shipping';
+        shippingInfo.style.color = '#4CAF50';
+      } else {
+        const amountLeft = 90 - total;
+        shippingInfo.innerHTML = `<span style=\"color:#d32f2f;font-weight:600;\">€8 shipping cost</span> <span style=\"color:#0078ff;font-weight:500;\">&nbsp;· Spend <b>€${amountLeft.toFixed(2)}</b> more for free shipping!</span>`;
+        shippingInfo.style.color = '';
+      }
+      shippingInfo.style.display = 'block';
+    } else {
+      shippingInfo.textContent = '';
+      shippingInfo.style.display = 'none';
+    }
+
+    // Update checkout summary
+    if (checkoutSummary) {
+      let html = '<div style="margin-bottom:1.2rem;">';
+      cart.forEach(item => {
+        let price = 49.95; // Default price for Ami Paris sweaters
+        let quantity = item.qty || item.quantity || 1;
+        
+        // Use the item's price if available (new cart structure)
+        if (item.price) {
+          price = item.price;
+        } else {
+          // Fallback to product name detection (old cart structure)
+          if (item.name.toLowerCase().includes('asics')) {
+            price = 84.95; // Asics shoes price
+          } else if (item.name.toLowerCase().includes('barcelona')) {
+            price = 29.95; // FC Barcelona jersey price
+          } else if (item.name.toLowerCase().includes('real madrid')) {
+            price = 29.95; // Real Madrid jersey price
+          } else if (item.name.toLowerCase().includes('portugal')) {
+            price = 29.95; // Portugal jersey price
+          }
+        }
+        
+        let itemTotal = price * quantity;
+        let itemColor = item.color || 'Standard';
+        html += `<div style=\"display:flex;align-items:center;justify-content:space-between;margin-bottom:0.7em;\">`
+             + `<span>${item.name} (${itemColor}, ${item.size}) x ${quantity}</span>`
+             + `<span style=\"font-weight:600;\">${itemTotal.toFixed(2)} €</span>`
+             + `</div>`;
+      });
+      // Shipping row
+      if (["Belgium", "Netherlands", "France", "Germany", "Luxembourg"].includes(country)) {
+        if (shipping > 0) {
+          html += `<div style=\"display:flex;align-items:center;justify-content:space-between;margin-bottom:0.7em;\">`
+               + `<span>Shipping</span>`
+               + `<span style=\"font-weight:600;\">${shipping.toFixed(2)} €</span>`
+               + `</div>`;
+        } else {
+          html += `<div style=\"display:flex;align-items:center;justify-content:space-between;margin-bottom:0.7em;\">`
+               + `<span>Shipping</span>`
+               + `<span style=\"font-weight:600;color:#4CAF50;\">Free</span>`
+               + `</div>`;
+        }
+      }
+      let grandTotal = total + shipping;
+      html += `<hr style=\"margin:1em 0;\"><div style=\"display:flex;align-items:center;justify-content:space-between;font-size:1.2em;font-weight:700;\"><span>Total</span><span>${grandTotal.toFixed(2)} €</span></div></div>`;
+      checkoutSummary.innerHTML = html;
+    }
+  }
+
+  if (checkoutBtn) {
+    checkoutBtn.addEventListener('click', function() {
+      if (cart.length === 0) return;
+      cartSection.style.display = 'none';
+      checkoutSection.style.display = 'block';
+      updateShippingInfoAndSummary();
+    });
+  }
+
+  if (buyerCountry) {
+    buyerCountry.addEventListener('change', updateShippingInfoAndSummary);
+    buyerCountry.addEventListener('input', updateShippingInfoAndSummary);
+    updateShippingInfoAndSummary();
+  }
+
+  // --- BLOCK NUMBERS IN ADDRESS AND CITY FIELDS ---
+  function blockNumbersInput(e) {
+    // Allow navigation, backspace, delete, tab, etc.
+    const allowedKeys = [8, 9, 13, 16, 17, 18, 20, 27, 32, 37, 38, 39, 40, 46];
+    // Allow Ctrl/Cmd+A/C/V/X/Z/Y
+    if ((e.ctrlKey || e.metaKey) && ['A','C','V','X','Z','Y'].includes(e.key.toUpperCase())) return;
+    // Block number keys
+    if ((e.key >= '0' && e.key <= '9') || (e.keyCode >= 48 && e.keyCode <= 57) || (e.keyCode >= 96 && e.keyCode <= 105)) {
+      e.preventDefault();
+    }
+  }
+  function removeNumbersOnInput(e) {
+    const val = e.target.value;
+    const newVal = val.replace(/[0-9]/g, '');
+    if (val !== newVal) e.target.value = newVal;
+  }
+  var addressInput = document.getElementById('buyer-address');
+  var cityInput = document.getElementById('buyer-city');
+  if (addressInput) {
+    addressInput.addEventListener('keydown', blockNumbersInput);
+    addressInput.addEventListener('input', removeNumbersOnInput);
+  }
+  if (cityInput) {
+    cityInput.addEventListener('keydown', blockNumbersInput);
+    cityInput.addEventListener('input', removeNumbersOnInput);
+  }
+
+  // Optionally, handle form submit
+  // const checkoutForm = document.getElementById('checkout-form');
+  // if (checkoutForm) {
+  //   checkoutForm.addEventListener('submit', function(e) {
+  //     e.preventDefault();
+  //     alert('Thank you for your order! (Demo: no real payment processed)');
+  //     localStorage.removeItem('cart');
+  //     window.location.hash = '#home';
+  //     window.location.reload();
+  //   });
+  // }
+
+  // --- HIDE CHECKOUT IF NAVIGATION IS USED ---
+  const sideNav = document.getElementById('side-nav');
+  if (sideNav) {
+    sideNav.addEventListener('click', function(e) {
+      if (e.target.tagName === 'A') {
+        // Hide checkout section if visible
+        const checkoutSection = document.getElementById('checkout');
+        if (checkoutSection && checkoutSection.style.display !== 'none') {
+          checkoutSection.style.display = 'none';
+        }
+        // Optionally, show home or cart section if needed
+      }
+    });
+  }
+});
+
+    </script>
+    <script>
+function updateMainImage(imageSrc, productCard) {
+    const mainImage = productCard.querySelector('.main-product-img');
+    mainImage.style.opacity = '0';
+    setTimeout(() => {
+        mainImage.src = imageSrc;
+        mainImage.style.opacity = '1';
+    }, 300);
+    const thumbnails = productCard.querySelectorAll('.thumb-img');
+    thumbnails.forEach(img => img.classList.remove('selected'));
+    thumbnails.forEach(img => {
+        if (img.src === imageSrc || img.src.endsWith(imageSrc.split('/').pop())) {
+            img.classList.add('selected');
+        }
+    });
+}
+
+// Update onclick handlers for thumbnails
+const productCards = document.querySelectorAll('.product');
+productCards.forEach(productCard => {
+    const thumbnails = productCard.querySelectorAll('.thumb-img');
+    thumbnails.forEach(thumbnail => {
+        const imageSrc = thumbnail.src;
+        thumbnail.onclick = () => {
+            thumbnails.forEach(img => img.classList.remove('selected')); // Remove selected from all
+            thumbnail.classList.add('selected'); // Add selected to clicked
+            updateMainImage(imageSrc, productCard);
+        };
+    });
+});
+</script>
+</body>
+</html>

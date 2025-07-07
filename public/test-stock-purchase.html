@@ -1,0 +1,273 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Test Stock Purchase - Papa's Fashion</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            max-width: 800px;
+            margin: 0 auto;
+            padding: 20px;
+            background-color: #f5f5f5;
+        }
+        .test-container {
+            background: white;
+            padding: 30px;
+            border-radius: 10px;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+        }
+        h1 {
+            color: #333;
+            text-align: center;
+            margin-bottom: 30px;
+        }
+        .test-section {
+            margin-bottom: 30px;
+            padding: 20px;
+            border: 1px solid #ddd;
+            border-radius: 5px;
+        }
+        .test-section h2 {
+            color: #666;
+            margin-top: 0;
+        }
+        button {
+            background-color: #007bff;
+            color: white;
+            padding: 10px 20px;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+            margin: 5px;
+        }
+        button:hover {
+            background-color: #0056b3;
+        }
+        .result {
+            margin-top: 15px;
+            padding: 10px;
+            border-radius: 5px;
+            background-color: #f8f9fa;
+            border: 1px solid #dee2e6;
+        }
+        .success {
+            background-color: #d4edda;
+            border-color: #c3e6cb;
+            color: #155724;
+        }
+        .error {
+            background-color: #f8d7da;
+            border-color: #f5c6cb;
+            color: #721c24;
+        }
+        .stock-info {
+            background-color: #e7f3ff;
+            padding: 15px;
+            border-radius: 5px;
+            margin: 10px 0;
+        }
+        pre {
+            background-color: #f8f9fa;
+            padding: 10px;
+            border-radius: 5px;
+            overflow-x: auto;
+            font-size: 12px;
+        }
+    </style>
+</head>
+<body>
+    <div class="test-container">
+        <h1>🧪 Stock Purchase Test</h1>
+        
+        <div class="test-section">
+            <h2>Current Stock Status</h2>
+            <div class="stock-info">
+                <p><strong>Product:</strong> Ami Paris Sweater White</p>
+                <p><strong>Size:</strong> M</p>
+                <p><strong>Current Stock:</strong> <span id="currentStock">Loading...</span></p>
+            </div>
+            <button onclick="checkCurrentStock()">Refresh Stock</button>
+            <div id="stockResult" class="result" style="display: none;"></div>
+        </div>
+
+        <div class="test-section">
+            <h2>Test Stock Reduction</h2>
+            <p>This will simulate a purchase and test if the stock gets reduced properly.</p>
+            <button onclick="testStockReduction()">Test Stock Reduction</button>
+            <div id="reductionResult" class="result" style="display: none;"></div>
+        </div>
+
+        <div class="test-section">
+            <h2>Backend Connection Test</h2>
+            <button onclick="testBackendConnection()">Test Backend</button>
+            <div id="backendResult" class="result" style="display: none;"></div>
+        </div>
+
+        <div class="test-section">
+            <h2>Debug Info</h2>
+            <button onclick="showDebugInfo()">Show Debug Info</button>
+            <div id="debugInfo" class="result" style="display: none;"></div>
+        </div>
+    </div>
+
+    <script>
+        const BACKEND_URL = 'http://localhost:3001';
+        
+        async function checkCurrentStock() {
+            const resultDiv = document.getElementById('stockResult');
+            const stockSpan = document.getElementById('currentStock');
+            
+            try {
+                const response = await fetch('/src/stock-config.json');
+                const stockConfig = await response.json();
+                
+                const amiParisWhite = stockConfig.products['ami-paris']['white'];
+                const stockM = amiParisWhite.sizes['M'].stock;
+                
+                stockSpan.textContent = stockM;
+                resultDiv.innerHTML = `
+                    <strong>Stock Check Results:</strong><br>
+                    Current stock for Ami Paris White size M: ${stockM}<br>
+                    Last updated: ${stockConfig.settings.lastUpdated}
+                `;
+                resultDiv.className = 'result success';
+                resultDiv.style.display = 'block';
+                
+            } catch (error) {
+                console.error('Error checking stock:', error);
+                resultDiv.innerHTML = `<strong>Error:</strong> ${error.message}`;
+                resultDiv.className = 'result error';
+                resultDiv.style.display = 'block';
+                stockSpan.textContent = 'Error';
+            }
+        }
+        
+        async function testStockReduction() {
+            const resultDiv = document.getElementById('reductionResult');
+            
+            try {
+                // First, check current stock
+                const stockResponse = await fetch('/src/stock-config.json');
+                const stockConfig = await response.json();
+                const currentStock = stockConfig.products['ami-paris']['white'].sizes['M'].stock;
+                
+                resultDiv.innerHTML = `
+                    <strong>Testing Stock Reduction...</strong><br>
+                    Current stock before test: ${currentStock}<br>
+                    <em>Simulating purchase of 1 unit...</em>
+                `;
+                resultDiv.className = 'result';
+                resultDiv.style.display = 'block';
+                
+                // Simulate a stock reduction request
+                const testCartItems = [
+                    {
+                        name: "Ami Paris Sweater White",
+                        color: "White",
+                        size: "M",
+                        qty: 1,
+                        price: 49.95
+                    }
+                ];
+                
+                const response = await fetch(`${BACKEND_URL}/reduce-stock`, {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                    },
+                    body: JSON.stringify({ items: testCartItems })
+                });
+                
+                const result = await response.json();
+                
+                if (result.success) {
+                    // Check stock again
+                    const newStockResponse = await fetch('/src/stock-config.json');
+                    const newStockConfig = await newStockResponse.json();
+                    const newStock = newStockConfig.products['ami-paris']['white'].sizes['M'].stock;
+                    
+                    resultDiv.innerHTML = `
+                        <strong>Stock Reduction Test Results:</strong><br>
+                        Stock before: ${currentStock}<br>
+                        Stock after: ${newStock}<br>
+                        Expected reduction: 1<br>
+                        Actual reduction: ${currentStock - newStock}<br>
+                        <span style="color: ${currentStock - newStock === 1 ? 'green' : 'red'};">
+                            Test ${currentStock - newStock === 1 ? 'PASSED' : 'FAILED'}
+                        </span>
+                    `;
+                    resultDiv.className = 'result success';
+                } else {
+                    resultDiv.innerHTML = `<strong>Error:</strong> ${result.message}`;
+                    resultDiv.className = 'result error';
+                }
+                
+            } catch (error) {
+                console.error('Error testing stock reduction:', error);
+                resultDiv.innerHTML = `<strong>Error:</strong> ${error.message}`;
+                resultDiv.className = 'result error';
+            }
+        }
+        
+        async function testBackendConnection() {
+            const resultDiv = document.getElementById('backendResult');
+            
+            try {
+                const response = await fetch(`${BACKEND_URL}/test`);
+                const result = await response.json();
+                
+                resultDiv.innerHTML = `
+                    <strong>Backend Connection Test:</strong><br>
+                    Status: Connected ✅<br>
+                    Response: ${result.message}
+                `;
+                resultDiv.className = 'result success';
+                resultDiv.style.display = 'block';
+                
+            } catch (error) {
+                console.error('Error connecting to backend:', error);
+                resultDiv.innerHTML = `
+                    <strong>Backend Connection Test:</strong><br>
+                    Status: Failed ❌<br>
+                    Error: ${error.message}<br>
+                    <em>Make sure the backend server is running on port 3001</em>
+                `;
+                resultDiv.className = 'result error';
+                resultDiv.style.display = 'block';
+            }
+        }
+        
+        async function showDebugInfo() {
+            const resultDiv = document.getElementById('debugInfo');
+            
+            try {
+                const stockResponse = await fetch('/src/stock-config.json');
+                const stockConfig = await stockResponse.json();
+                
+                resultDiv.innerHTML = `
+                    <strong>Debug Information:</strong><br>
+                    <pre>${JSON.stringify(stockConfig.products['ami-paris']['white'], null, 2)}</pre>
+                    <br>
+                    <strong>Settings:</strong><br>
+                    <pre>${JSON.stringify(stockConfig.settings, null, 2)}</pre>
+                `;
+                resultDiv.className = 'result';
+                resultDiv.style.display = 'block';
+                
+            } catch (error) {
+                console.error('Error getting debug info:', error);
+                resultDiv.innerHTML = `<strong>Error:</strong> ${error.message}`;
+                resultDiv.className = 'result error';
+                resultDiv.style.display = 'block';
+            }
+        }
+        
+        // Load current stock on page load
+        window.onload = function() {
+            checkCurrentStock();
+        };
+    </script>
+</body>
+</html>

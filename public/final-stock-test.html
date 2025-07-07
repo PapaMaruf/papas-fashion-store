@@ -1,0 +1,381 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Final Stock Test - All Products - Papa's Fashion</title>
+  <style>
+    body {
+      font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+      max-width: 900px;
+      margin: 20px auto;
+      padding: 20px;
+      background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+      min-height: 100vh;
+    }
+    .container {
+      background: white;
+      padding: 40px;
+      border-radius: 15px;
+      box-shadow: 0 10px 30px rgba(0,0,0,0.2);
+    }
+    h1 {
+      color: #2c3e50;
+      text-align: center;
+      font-size: 2.5rem;
+      margin-bottom: 10px;
+    }
+    .subtitle {
+      text-align: center;
+      color: #7f8c8d;
+      font-size: 1.1rem;
+      margin-bottom: 40px;
+    }
+    .test-category {
+      margin: 30px 0;
+      padding: 25px;
+      border: 2px solid #ecf0f1;
+      border-radius: 12px;
+      background: #f8f9fa;
+    }
+    .test-category h3 {
+      color: #2c3e50;
+      margin-top: 0;
+      font-size: 1.4rem;
+      display: flex;
+      align-items: center;
+      gap: 10px;
+    }
+    .product-tests {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+      gap: 15px;
+      margin: 20px 0;
+    }
+    .product-test {
+      background: white;
+      padding: 20px;
+      border-radius: 8px;
+      box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+      text-align: center;
+    }
+    .product-test h4 {
+      color: #34495e;
+      margin: 0 0 15px 0;
+      font-size: 1.1rem;
+    }
+    .test-btn {
+      width: 100%;
+      padding: 12px 15px;
+      border: none;
+      border-radius: 6px;
+      cursor: pointer;
+      font-size: 15px;
+      font-weight: 600;
+      transition: all 0.3s ease;
+      text-transform: uppercase;
+      letter-spacing: 0.5px;
+    }
+    .test-btn.asics { 
+      background: linear-gradient(135deg, #3498db, #2980b9); 
+      color: white; 
+    }
+    .test-btn.ami { 
+      background: linear-gradient(135deg, #e74c3c, #c0392b); 
+      color: white; 
+    }
+    .test-btn.jersey { 
+      background: linear-gradient(135deg, #27ae60, #229954); 
+      color: white; 
+    }
+    .test-btn:hover { 
+      transform: translateY(-2px); 
+      box-shadow: 0 4px 12px rgba(0,0,0,0.2);
+    }
+    .results {
+      margin: 30px 0;
+      padding: 20px;
+      background: #2c3e50;
+      color: #ecf0f1;
+      border-radius: 8px;
+      font-family: 'Courier New', monospace;
+      font-size: 14px;
+      white-space: pre-wrap;
+      max-height: 500px;
+      overflow-y: auto;
+      line-height: 1.6;
+    }
+    .success { color: #2ecc71; font-weight: bold; }
+    .error { color: #e74c3c; font-weight: bold; }
+    .warning { color: #f39c12; font-weight: bold; }
+    .info { color: #3498db; }
+    .summary {
+      background: #34495e;
+      color: white;
+      padding: 20px;
+      border-radius: 8px;
+      margin: 20px 0;
+    }
+    .summary h3 {
+      margin-top: 0;
+      color: #ecf0f1;
+    }
+  </style>
+</head>
+<body>
+  <div class="container">
+    <h1>🧪 Final Stock Reduction Test</h1>
+    <p class="subtitle">Comprehensive test for all product types: Asics sneakers, Ami Paris sweaters, and football jerseys</p>
+    
+    <div class="test-category">
+      <h3>👟 Asics Gel-NYC Sneakers</h3>
+      <div class="product-tests">
+        <div class="product-test">
+          <h4>Yankees</h4>
+          <button class="test-btn asics" onclick="testProduct('Asics Gel-NYC Yankees', 'Yankees', '42', 'asics')">
+            Test Yankees (42)
+          </button>
+        </div>
+        <div class="product-test">
+          <h4>Cream Arctic Sky</h4>
+          <button class="test-btn asics" onclick="testProduct('Asics Gel-NYC Cream Arctic Sky', 'Cream Arctic Sky', '40', 'asics')">
+            Test Cream Arctic Sky (40)
+          </button>
+        </div>
+        <div class="product-test">
+          <h4>Ivory Clay Grey</h4>
+          <button class="test-btn asics" onclick="testProduct('Asics Gel-NYC Ivory Clay Grey', 'Ivory Clay Grey', '42', 'asics')">
+            Test Ivory Clay Grey (42)
+          </button>
+        </div>
+        <div class="product-test">
+          <h4>Black Graphite Grey</h4>
+          <button class="test-btn asics" onclick="testProduct('Asics Gel-NYC Black Graphite Grey', 'Black Graphite Grey', '40', 'asics')">
+            Test Black Graphite Grey (40)
+          </button>
+        </div>
+      </div>
+    </div>
+
+    <div class="test-category">
+      <h3>🧥 Ami Paris Sweaters</h3>
+      <div class="product-tests">
+        <div class="product-test">
+          <h4>Black Sweater</h4>
+          <button class="test-btn ami" onclick="testProduct('Ami Paris Sweater Black', 'Black', 'L', 'ami')">
+            Test Black (L)
+          </button>
+        </div>
+        <div class="product-test">
+          <h4>White Sweater</h4>
+          <button class="test-btn ami" onclick="testProduct('Ami Paris Sweater White', 'White', 'M', 'ami')">
+            Test White (M)
+          </button>
+        </div>
+      </div>
+    </div>
+
+    <div class="test-category">
+      <h3>⚽ Football Jerseys</h3>
+      <div class="product-tests">
+        <div class="product-test">
+          <h4>FC Barcelona</h4>
+          <button class="test-btn jersey" onclick="testProduct('FC Barcelona Limited Edition Barcelona City', 'Barcelona City', 'M', 'jersey')">
+            Test FC Barcelona (M)
+          </button>
+        </div>
+        <div class="product-test">
+          <h4>Real Madrid</h4>
+          <button class="test-btn jersey" onclick="testProduct('Real Madrid Limited Edition Red Dragon', 'Red Dragon', 'L', 'jersey')">
+            Test Real Madrid (L)
+          </button>
+        </div>
+        <div class="product-test">
+          <h4>Portugal</h4>
+          <button class="test-btn jersey" onclick="testProduct('Portugal Limited Edition LV', 'LV', 'M', 'jersey')">
+            Test Portugal (M)
+          </button>
+        </div>
+      </div>
+    </div>
+
+    <div style="text-align: center; margin: 30px 0;">
+      <button class="test-btn" style="background: #95a5a6; color: white; max-width: 200px;" onclick="clearResults()">
+        🗑️ Clear Results
+      </button>
+    </div>
+
+    <div class="summary" id="summary" style="display: none;">
+      <h3>📊 Test Summary</h3>
+      <div id="summary-content"></div>
+    </div>
+
+    <div class="results" id="results">
+🚀 Ready to test stock reduction for all products!
+
+Click any product button above to test stock reduction.
+Each test will:
+1. Check current stock levels
+2. Attempt to reduce stock by 1 unit
+3. Report success/failure with detailed logging
+
+    </div>
+  </div>
+
+  <script>
+    const resultsDiv = document.getElementById('results');
+    const summaryDiv = document.getElementById('summary');
+    const summaryContent = document.getElementById('summary-content');
+    let testResults = [];
+    
+    function log(message, type = 'info') {
+      const timestamp = new Date().toLocaleTimeString();
+      const icon = type === 'success' ? '✅' : type === 'error' ? '❌' : type === 'warning' ? '⚠️' : '📝';
+      resultsDiv.innerHTML += `<span class="${type}">[${timestamp}] ${icon} ${message}</span>\n`;
+      resultsDiv.scrollTop = resultsDiv.scrollHeight;
+    }
+    
+    async function testProduct(name, color, size, category) {
+      const testId = `${category}-${color.replace(/\s+/g, '-').toLowerCase()}-${size}`;
+      log(`\n🧪 TESTING: ${name} (${color}, ${size})`, 'info');
+      log(`Category: ${category}`, 'info');
+      
+      try {
+        // Step 1: Check current stock
+        log('Step 1: Checking current stock...', 'info');
+        const stockResponse = await fetch('http://localhost:3001/api/stock-status');
+        
+        if (!stockResponse.ok) {
+          throw new Error(`Failed to fetch stock: ${stockResponse.status}`);
+        }
+        
+        const stockData = await stockResponse.json();
+        let currentStock = 'Unknown';
+        let stockPath = '';
+        
+        // Find current stock based on category
+        if (category === 'asics' && stockData.products?.['asics-gel-nyc']) {
+          for (const [variant, data] of Object.entries(stockData.products['asics-gel-nyc'])) {
+            if (data.name === name && data.sizes?.[size]) {
+              currentStock = data.sizes[size].stock;
+              stockPath = `asics-gel-nyc.${variant}.sizes.${size}`;
+              break;
+            }
+          }
+        } else if (category === 'ami' && stockData.products?.['ami-paris']) {
+          for (const [variant, data] of Object.entries(stockData.products['ami-paris'])) {
+            if (data.name === name && data.sizes?.[size]) {
+              currentStock = data.sizes[size].stock;
+              stockPath = `ami-paris.${variant}.sizes.${size}`;
+              break;
+            }
+          }
+        } else if (category === 'jersey' && stockData.products?.['football-jerseys']) {
+          for (const [variant, data] of Object.entries(stockData.products['football-jerseys'])) {
+            if (data.name === name && data.sizes?.[size]) {
+              currentStock = data.sizes[size].stock;
+              stockPath = `football-jerseys.${variant}.sizes.${size}`;
+              break;
+            }
+          }
+        }
+        
+        log(`Current stock: ${currentStock} units (${stockPath})`, currentStock > 0 ? 'success' : 'warning');
+        
+        if (currentStock === 0) {
+          log(`❌ SKIPPED: Item is out of stock`, 'warning');
+          testResults.push({ name, color, size, category, result: 'skipped', reason: 'out of stock' });
+          updateSummary();
+          return;
+        }
+        
+        // Step 2: Create test cart and reduce stock
+        log('Step 2: Creating test cart and reducing stock...', 'info');
+        const testCart = [{ name, color, size, qty: 1 }];
+        log(`Cart item: ${JSON.stringify(testCart[0])}`, 'info');
+        
+        const reduceResponse = await fetch('http://localhost:3001/api/reduce-stock', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ items: testCart })
+        });
+        
+        if (!reduceResponse.ok) {
+          const errorText = await reduceResponse.text();
+          throw new Error(`HTTP ${reduceResponse.status}: ${errorText}`);
+        }
+        
+        const result = await reduceResponse.json();
+        log(`Backend response: ${JSON.stringify(result, null, 2)}`, 'info');
+        
+        // Step 3: Analyze results
+        if (result.success && result.reductions?.length > 0) {
+          const reduction = result.reductions[0];
+          if (reduction.success) {
+            log(`✅ SUCCESS: Stock reduced from ${reduction.oldStock} to ${reduction.newStock}`, 'success');
+            testResults.push({ 
+              name, color, size, category, 
+              result: 'success', 
+              oldStock: reduction.oldStock, 
+              newStock: reduction.newStock 
+            });
+          } else {
+            log(`❌ FAILED: ${reduction.error || 'Unknown error'}`, 'error');
+            testResults.push({ name, color, size, category, result: 'failed', reason: reduction.error });
+          }
+        } else {
+          log(`❌ FAILED: Invalid response structure`, 'error');
+          testResults.push({ name, color, size, category, result: 'failed', reason: 'Invalid response' });
+        }
+        
+      } catch (error) {
+        log(`❌ ERROR: ${error.message}`, 'error');
+        testResults.push({ name, color, size, category, result: 'error', reason: error.message });
+      }
+      
+      log(`${'='.repeat(60)}`, 'info');
+      updateSummary();
+    }
+    
+    function updateSummary() {
+      if (testResults.length === 0) {
+        summaryDiv.style.display = 'none';
+        return;
+      }
+      
+      const successful = testResults.filter(r => r.result === 'success').length;
+      const failed = testResults.filter(r => r.result === 'failed').length;
+      const errors = testResults.filter(r => r.result === 'error').length;
+      const skipped = testResults.filter(r => r.result === 'skipped').length;
+      
+      let summary = `
+📊 <strong>Test Results Summary (${testResults.length} tests)</strong>
+✅ Successful: ${successful}
+❌ Failed: ${failed}
+⚠️ Errors: ${errors}
+🚫 Skipped: ${skipped}
+
+<strong>Recent Tests:</strong>`;
+      
+      testResults.slice(-3).forEach(test => {
+        const icon = test.result === 'success' ? '✅' : test.result === 'failed' ? '❌' : test.result === 'error' ? '⚠️' : '🚫';
+        summary += `\n${icon} ${test.name} (${test.color}, ${test.size})`;
+        if (test.result === 'success') {
+          summary += ` - Stock: ${test.oldStock} → ${test.newStock}`;
+        } else if (test.reason) {
+          summary += ` - ${test.reason}`;
+        }
+      });
+      
+      summaryContent.innerHTML = summary;
+      summaryDiv.style.display = 'block';
+    }
+    
+    function clearResults() {
+      resultsDiv.innerHTML = '🚀 Results cleared. Ready for new tests...\n\n';
+      testResults = [];
+      summaryDiv.style.display = 'none';
+    }
+  </script>
+</body>
+</html>

@@ -1,0 +1,248 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Payment Successful - Papa's Fashion</title>
+  <link href="https://fonts.googleapis.com/css2?family=Bebas+Neue&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="styles/main.css">
+  <style>
+    .success-container {
+      max-width: 600px;
+      margin: 3rem auto;
+      padding: 3rem 2rem;
+      background: #fff;
+      border-radius: 14px;
+      box-shadow: 0 2px 20px rgba(0,0,0,0.1);
+      text-align: center;
+    }
+    .success-icon {
+      font-size: 4rem;
+      color: #27ae60;
+      margin-bottom: 1rem;
+    }
+    .success-title {
+      font-family: 'Bebas Neue', sans-serif;
+      font-size: 2.5rem;
+      color: #27ae60;
+      margin-bottom: 1rem;
+    }
+    .success-message {
+      font-size: 1.2rem;
+      color: #666;
+      margin-bottom: 2rem;
+      line-height: 1.6;
+    }
+    .order-details {
+      background: #f8f9fa;
+      padding: 1.5rem;
+      border-radius: 10px;
+      margin: 2rem 0;
+      text-align: left;
+    }
+    .order-details h3 {
+      margin-top: 0;
+      color: #2c3e50;
+      font-family: 'Bebas Neue', sans-serif;
+      font-size: 1.5rem;
+    }
+    .order-info {
+      display: grid;
+      gap: 0.5rem;
+    }
+    .order-info div {
+      display: flex;
+      justify-content: space-between;
+      padding: 0.5rem 0;
+      border-bottom: 1px solid #eee;
+    }
+    .order-info div:last-child {
+      border-bottom: none;
+      font-weight: bold;
+      font-size: 1.1rem;
+    }
+    .success-buttons {
+      display: flex;
+      gap: 1rem;
+      justify-content: center;
+      flex-wrap: wrap;
+      margin-top: 2rem;
+    }
+    .btn {
+      padding: 0.8rem 1.5rem;
+      border: none;
+      border-radius: 8px;
+      font-size: 1.1rem;
+      font-weight: 600;
+      cursor: pointer;
+      text-decoration: none;
+      display: inline-block;
+      transition: all 0.3s ease;
+    }
+    .btn-primary {
+      background: #3498db;
+      color: white;
+    }
+    .btn-primary:hover {
+      background: #2980b9;
+    }
+    .btn-secondary {
+      background: #27ae60;
+      color: white;
+    }
+    .btn-secondary:hover {
+      background: #229954;
+    }
+    .loading {
+      color: #666;
+      font-style: italic;
+    }
+  </style>
+</head>
+<body>
+  <header>
+    <div class="header-brand">
+      <span>PAPA'S FASHION</span>
+      <img src="images/papasfashionlogo.png" alt="Papa's Fashion Logo" class="brand-logo" />
+    </div>
+  </header>
+
+  <div class="success-container">
+    <div class="success-icon">✅</div>
+    <h1 class="success-title">Payment Successful!</h1>
+    <p class="success-message">
+      Thank you for your purchase! Your order has been confirmed and will be processed shortly.<br>
+      You will receive an email confirmation with your order details.
+    </p>
+
+    <div class="order-details">
+      <h3>Order Details</h3>
+      <div id="order-info" class="order-info">
+        <div class="loading">Loading order information...</div>
+      </div>
+    </div>
+
+    <div class="success-buttons">
+      <a href="index.html" class="btn btn-primary">Continue Shopping</a>
+      <a href="#" id="print-receipt" class="btn btn-secondary">Print Receipt</a>
+    </div>
+  </div>
+
+  <script>
+    // Clear the cart since payment was successful
+    localStorage.removeItem('cart');
+    
+    // Get session ID from URL parameters
+    const urlParams = new URLSearchParams(window.location.search);
+    const sessionId = urlParams.get('session_id');
+    
+    if (sessionId) {
+      // Fetch order details from your backend
+      fetchOrderDetails(sessionId);
+    } else {
+      // If no session ID, show basic success message
+      document.getElementById('order-info').innerHTML = '<div>Order confirmed successfully!</div>';
+    }
+
+    async function fetchOrderDetails(sessionId) {
+      try {
+        // Get the current domain for API calls
+        const apiUrl = window.location.hostname === 'localhost' || window.location.hostname === '127.0.0.1' 
+          ? 'http://localhost:3001/order-details' 
+          : '/api/order-details';
+        
+        // Fetch order details and trigger email sending
+        const response = await fetch(`${apiUrl}?sessionId=${sessionId}&sendEmail=true`);
+        
+        if (response.ok) {
+          const orderData = await response.json();
+          displayOrderDetails(orderData);
+          
+          // Show email status
+          if (orderData.emailSent === true) {
+            showEmailStatus('Confirmation email sent successfully! 📧', 'success');
+          } else if (orderData.emailSent === false) {
+            showEmailStatus('Order confirmed, but email could not be sent.', 'warning');
+          }
+        } else {
+          throw new Error('Failed to fetch order details');
+        }
+      } catch (error) {
+        console.error('Error fetching order details:', error);
+        document.getElementById('order-info').innerHTML = `
+          <div>
+            <span>Order ID:</span>
+            <span>${sessionId.substring(0, 20)}...</span>
+          </div>
+          <div>
+            <span>Status:</span>
+            <span>Confirmed</span>
+          </div>
+        `;
+      }
+    }
+
+    function displayOrderDetails(orderData) {
+      const orderInfoDiv = document.getElementById('order-info');
+      
+      let html = '';
+      if (orderData.customer_email) {
+        html += `<div><span>Email:</span><span>${orderData.customer_email}</span></div>`;
+      }
+      if (orderData.amount_total) {
+        html += `<div><span>Total Paid:</span><span>€${(orderData.amount_total / 100).toFixed(2)}</span></div>`;
+      }
+      if (orderData.payment_status) {
+        html += `<div><span>Payment Status:</span><span>${orderData.payment_status}</span></div>`;
+      }
+      if (orderData.created) {
+        const date = new Date(orderData.created * 1000).toLocaleString();
+        html += `<div><span>Order Date:</span><span>${date}</span></div>`;
+      }
+      
+      orderInfoDiv.innerHTML = html || '<div>Order confirmed successfully!</div>';
+    }
+
+    function showEmailStatus(message, type) {
+      const emailStatusDiv = document.createElement('div');
+      emailStatusDiv.className = `email-status ${type}`;
+      emailStatusDiv.innerHTML = `
+        <div style="
+          padding: 1rem;
+          margin: 1rem 0;
+          border-radius: 8px;
+          background: ${type === 'success' ? '#d4edda' : '#fff3cd'};
+          color: ${type === 'success' ? '#155724' : '#856404'};
+          border: 1px solid ${type === 'success' ? '#c3e6cb' : '#ffeaa7'};
+          text-align: center;
+          font-weight: 500;
+        ">
+          ${message}
+        </div>
+      `;
+      
+      // Insert after the order details
+      const orderDetails = document.querySelector('.order-details');
+      orderDetails.after(emailStatusDiv);
+    }
+
+    // Print receipt functionality
+    document.getElementById('print-receipt').addEventListener('click', function(e) {
+      e.preventDefault();
+      window.print();
+    });
+
+    // Optional: Add tracking or analytics for successful payments
+    console.log('Payment completed successfully');
+    
+    // Optional: Send conversion tracking to analytics
+    if (typeof gtag !== 'undefined') {
+      gtag('event', 'purchase', {
+        'transaction_id': sessionId,
+        'value': 'order_total',
+        'currency': 'EUR'
+      });
+    }
+  </script>
+</body>
+</html>

@@ -1,0 +1,401 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Payment Flow Test - Papa's Fashion</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            max-width: 800px;
+            margin: 0 auto;
+            padding: 20px;
+            background-color: #f5f5f5;
+        }
+        .test-container {
+            background: white;
+            padding: 30px;
+            border-radius: 10px;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+        }
+        h1 {
+            color: #333;
+            text-align: center;
+            margin-bottom: 30px;
+        }
+        .test-section {
+            margin-bottom: 30px;
+            padding: 20px;
+            border: 1px solid #ddd;
+            border-radius: 5px;
+        }
+        .test-section h2 {
+            color: #666;
+            margin-top: 0;
+        }
+        button {
+            background-color: #007bff;
+            color: white;
+            padding: 10px 20px;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+            margin: 5px;
+        }
+        button:hover {
+            background-color: #0056b3;
+        }
+        .result {
+            margin-top: 15px;
+            padding: 10px;
+            border-radius: 5px;
+            background-color: #f8f9fa;
+            border: 1px solid #dee2e6;
+        }
+        .success {
+            background-color: #d4edda;
+            border-color: #c3e6cb;
+            color: #155724;
+        }
+        .error {
+            background-color: #f8d7da;
+            border-color: #f5c6cb;
+            color: #721c24;
+        }
+        .warning {
+            background-color: #fff3cd;
+            border-color: #ffeaa7;
+            color: #856404;
+        }
+        .stock-info {
+            background-color: #e7f3ff;
+            padding: 15px;
+            border-radius: 5px;
+            margin: 10px 0;
+        }
+        pre {
+            background-color: #f8f9fa;
+            padding: 10px;
+            border-radius: 5px;
+            overflow-x: auto;
+            font-size: 12px;
+            white-space: pre-wrap;
+        }
+        .log-entry {
+            margin: 5px 0;
+            padding: 8px;
+            border-radius: 3px;
+            background-color: #f8f9fa;
+            border-left: 4px solid #007bff;
+        }
+    </style>
+</head>
+<body>
+    <div class="test-container">
+        <h1>🧪 Payment Flow & Stock Test</h1>
+        
+        <div class="test-section">
+            <h2>Current Stock Status</h2>
+            <div class="stock-info">
+                <p><strong>Product:</strong> Ami Paris Sweater White</p>
+                <p><strong>Size:</strong> M</p>
+                <p><strong>Current Stock:</strong> <span id="currentStock">Loading...</span></p>
+            </div>
+            <button onclick="checkCurrentStock()">Refresh Stock</button>
+            <div id="stockResult" class="result" style="display: none;"></div>
+        </div>
+
+        <div class="test-section">
+            <h2>Simulate Payment Flow</h2>
+            <p>This will simulate the exact payment flow that should trigger stock reduction.</p>
+            <button onclick="simulatePaymentFlow()">Simulate Payment</button>
+            <div id="paymentResult" class="result" style="display: none;"></div>
+        </div>
+
+        <div class="test-section">
+            <h2>Test Order Details Call</h2>
+            <p>Test the order details endpoint directly with a simulated session ID.</p>
+            <button onclick="testOrderDetailsCall()">Test Order Details</button>
+            <div id="orderDetailsResult" class="result" style="display: none;"></div>
+        </div>
+
+        <div class="test-section">
+            <h2>Test Log</h2>
+            <div id="testLog"></div>
+            <button onclick="clearLog()">Clear Log</button>
+        </div>
+
+        <div class="test-section">
+            <h2>Backend Connection</h2>
+            <button onclick="testBackendConnection()">Test Backend</button>
+            <div id="backendResult" class="result" style="display: none;"></div>
+        </div>
+    </div>
+
+    <script>
+        const BACKEND_URL = 'http://localhost:3001';
+        
+        function log(message, type = 'info') {
+            const logDiv = document.getElementById('testLog');
+            const timestamp = new Date().toLocaleTimeString();
+            const logEntry = document.createElement('div');
+            logEntry.className = 'log-entry';
+            logEntry.innerHTML = `<strong>[${timestamp}]</strong> ${message}`;
+            logDiv.appendChild(logEntry);
+            logDiv.scrollTop = logDiv.scrollHeight;
+        }
+        
+        function clearLog() {
+            document.getElementById('testLog').innerHTML = '';
+        }
+        
+        async function checkCurrentStock() {
+            const resultDiv = document.getElementById('stockResult');
+            const stockSpan = document.getElementById('currentStock');
+            
+            try {
+                log('Checking current stock...');
+                const response = await fetch('/src/stock-config.json');
+                const stockConfig = await response.json();
+                
+                const amiParisWhite = stockConfig.products['ami-paris']['white'];
+                const stockM = amiParisWhite.sizes['M'].stock;
+                
+                stockSpan.textContent = stockM;
+                resultDiv.innerHTML = `
+                    <strong>Stock Check Results:</strong><br>
+                    Current stock for Ami Paris White size M: ${stockM}<br>
+                    Last updated: ${stockConfig.settings.lastUpdated}
+                `;
+                resultDiv.className = 'result success';
+                resultDiv.style.display = 'block';
+                
+                log(`Current stock: ${stockM}`, 'success');
+                
+            } catch (error) {
+                console.error('Error checking stock:', error);
+                log(`Error checking stock: ${error.message}`, 'error');
+                resultDiv.innerHTML = `<strong>Error:</strong> ${error.message}`;
+                resultDiv.className = 'result error';
+                resultDiv.style.display = 'block';
+                stockSpan.textContent = 'Error';
+            }
+        }
+        
+        async function simulatePaymentFlow() {
+            const resultDiv = document.getElementById('paymentResult');
+            
+            try {
+                log('Starting payment flow simulation...');
+                
+                // Step 1: Get current stock
+                const stockResponse = await fetch('/src/stock-config.json');
+                const stockConfig = await stockResponse.json();
+                const initialStock = stockConfig.products['ami-paris']['white'].sizes['M'].stock;
+                
+                log(`Initial stock: ${initialStock}`);
+                
+                // Step 2: Create checkout session
+                const cart = [
+                    {
+                        name: "Ami Paris Sweater White",
+                        color: "White",
+                        size: "M",
+                        qty: 1,
+                        price: 49.95
+                    }
+                ];
+                
+                const customerInfo = {
+                    name: "Test Customer",
+                    email: "test@example.com",
+                    phone: "+32 123 456 789",
+                    country: "Belgium",
+                    address: "Test Street 123",
+                    postalCode: "1000",
+                    city: "Brussels"
+                };
+                
+                log('Creating checkout session...');
+                const checkoutResponse = await fetch(`${BACKEND_URL}/api/create-checkout-session`, {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                    },
+                    body: JSON.stringify({
+                        amount: 49.95,
+                        customerInfo: customerInfo,
+                        cart: cart
+                    })
+                });
+                
+                const checkoutResult = await checkoutResponse.json();
+                if (!checkoutResponse.ok) {
+                    throw new Error(`Checkout failed: ${checkoutResult.error}`);
+                }
+                
+                log(`Checkout session created: ${checkoutResult.sessionId}`);
+                
+                // Step 3: Simulate successful payment by calling order details
+                // This is what happens when the user completes payment and lands on success page
+                log('Simulating successful payment completion...');
+                const orderDetailsResponse = await fetch(`${BACKEND_URL}/order-details/${checkoutResult.sessionId}?sendEmail=false&testMode=true`);
+                const orderDetailsResult = await orderDetailsResponse.json();
+                
+                if (!orderDetailsResponse.ok) {
+                    throw new Error(`Order details failed: ${orderDetailsResult.error}`);
+                }
+                
+                log('Order details retrieved successfully');
+                
+                // Step 4: Check stock again to see if it was reduced
+                const newStockResponse = await fetch('/src/stock-config.json');
+                const newStockConfig = await newStockResponse.json();
+                const finalStock = newStockConfig.products['ami-paris']['white'].sizes['M'].stock;
+                
+                log(`Final stock: ${finalStock}`);
+                
+                const stockReduced = initialStock - finalStock;
+                const expectedReduction = 1;
+                
+                resultDiv.innerHTML = `
+                    <strong>Payment Flow Simulation Results:</strong><br>
+                    Initial stock: ${initialStock}<br>
+                    Final stock: ${finalStock}<br>
+                    Expected reduction: ${expectedReduction}<br>
+                    Actual reduction: ${stockReduced}<br>
+                    <br>
+                    <strong>Test ${stockReduced === expectedReduction ? 'PASSED ✅' : 'FAILED ❌'}</strong><br>
+                    <br>
+                    <strong>Session ID:</strong> ${checkoutResult.sessionId}<br>
+                    <strong>Order Status:</strong> ${orderDetailsResult.payment_status}
+                `;
+                
+                resultDiv.className = stockReduced === expectedReduction ? 'result success' : 'result error';
+                resultDiv.style.display = 'block';
+                
+                log(`Payment flow simulation completed. Stock reduction: ${stockReduced === expectedReduction ? 'SUCCESS' : 'FAILED'}`);
+                
+            } catch (error) {
+                console.error('Error in payment flow simulation:', error);
+                log(`Payment flow simulation error: ${error.message}`, 'error');
+                resultDiv.innerHTML = `<strong>Error:</strong> ${error.message}`;
+                resultDiv.className = 'result error';
+                resultDiv.style.display = 'block';
+            }
+        }
+        
+        async function testOrderDetailsCall() {
+            const resultDiv = document.getElementById('orderDetailsResult');
+            
+            try {
+                log('Testing order details call...');
+                
+                // Create a test session first
+                const cart = [
+                    {
+                        name: "Ami Paris Sweater White",
+                        color: "White",
+                        size: "M",
+                        qty: 1,
+                        price: 49.95
+                    }
+                ];
+                
+                const customerInfo = {
+                    name: "Test Customer",
+                    email: "test@example.com",
+                    phone: "+32 123 456 789",
+                    country: "Belgium",
+                    address: "Test Street 123",
+                    postalCode: "1000",
+                    city: "Brussels"
+                };
+                
+                const checkoutResponse = await fetch(`${BACKEND_URL}/api/create-checkout-session`, {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                    },
+                    body: JSON.stringify({
+                        amount: 49.95,
+                        customerInfo: customerInfo,
+                        cart: cart
+                    })
+                });
+                
+                const checkoutResult = await checkoutResponse.json();
+                const sessionId = checkoutResult.sessionId;
+                
+                log(`Testing with session ID: ${sessionId}`);
+                
+                // Now test the order details endpoint
+                const orderResponse = await fetch(`${BACKEND_URL}/order-details/${sessionId}?sendEmail=false&testMode=true`);
+                const orderResult = await orderResponse.json();
+                
+                resultDiv.innerHTML = `
+                    <strong>Order Details Test Results:</strong><br>
+                    <strong>Session ID:</strong> ${sessionId}<br>
+                    <strong>Response Status:</strong> ${orderResponse.status}<br>
+                    <strong>Payment Status:</strong> ${orderResult.payment_status}<br>
+                    <strong>Amount:</strong> €${orderResult.amount_total / 100}<br>
+                    <strong>Customer:</strong> ${orderResult.metadata?.customer_name}<br>
+                    <br>
+                    <strong>Full Response:</strong><br>
+                    <pre>${JSON.stringify(orderResult, null, 2)}</pre>
+                `;
+                
+                resultDiv.className = orderResponse.ok ? 'result success' : 'result error';
+                resultDiv.style.display = 'block';
+                
+                log(`Order details test completed. Status: ${orderResponse.status}`);
+                
+            } catch (error) {
+                console.error('Error testing order details:', error);
+                log(`Order details test error: ${error.message}`, 'error');
+                resultDiv.innerHTML = `<strong>Error:</strong> ${error.message}`;
+                resultDiv.className = 'result error';
+                resultDiv.style.display = 'block';
+            }
+        }
+        
+        async function testBackendConnection() {
+            const resultDiv = document.getElementById('backendResult');
+            
+            try {
+                log('Testing backend connection...');
+                const response = await fetch(`${BACKEND_URL}/test`);
+                const result = await response.json();
+                
+                resultDiv.innerHTML = `
+                    <strong>Backend Connection Test:</strong><br>
+                    Status: Connected ✅<br>
+                    Response: ${result.message}
+                `;
+                resultDiv.className = 'result success';
+                resultDiv.style.display = 'block';
+                
+                log('Backend connection test: SUCCESS');
+                
+            } catch (error) {
+                console.error('Error connecting to backend:', error);
+                log(`Backend connection test error: ${error.message}`, 'error');
+                resultDiv.innerHTML = `
+                    <strong>Backend Connection Test:</strong><br>
+                    Status: Failed ❌<br>
+                    Error: ${error.message}<br>
+                    <em>Make sure the backend server is running on port 3001</em>
+                `;
+                resultDiv.className = 'result error';
+                resultDiv.style.display = 'block';
+            }
+        }
+        
+        // Load current stock on page load
+        window.onload = function() {
+            checkCurrentStock();
+            log('Payment flow test page loaded');
+        };
+    </script>
+</body>
+</html>

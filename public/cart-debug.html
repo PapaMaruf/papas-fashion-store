@@ -1,0 +1,203 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Cart Debug - Papa's Fashion</title>
+  <link rel="stylesheet" href="styles/main.css">
+  <style>
+    .debug-section {
+      margin: 20px 0;
+      padding: 20px;
+      border: 1px solid #ddd;
+      border-radius: 8px;
+      background: #f9f9f9;
+    }
+    .debug-output {
+      background: #333;
+      color: #00ff00;
+      padding: 15px;
+      margin: 10px 0;
+      border-radius: 4px;
+      font-family: monospace;
+      font-size: 14px;
+      white-space: pre-wrap;
+      overflow-x: auto;
+    }
+    .cart-item {
+      border: 1px solid #ccc;
+      padding: 10px;
+      margin: 5px 0;
+      border-radius: 4px;
+      background: white;
+    }
+  </style>
+</head>
+<body>
+  <header>
+    <div class="header-brand">
+      <span>PAPA'S FASHION</span>
+      <img src="images/papasfashionlogo.png" alt="Papa's Fashion Logo" class="brand-logo" />
+    </div>
+  </header>
+
+  <main style="max-width:800px;margin:2rem auto;padding:1rem;">
+    <h1>Cart Debug Tool</h1>
+    <p>Debug cart storage and color detection for Asics Gel-NYC variants.</p>
+    
+    <div class="debug-section">
+      <h2>Current Cart Contents</h2>
+      <button onclick="debugCart()">Debug Cart</button>
+      <div id="cart-debug" class="debug-output"></div>
+    </div>
+
+    <div class="debug-section">
+      <h2>Clear Cart</h2>
+      <button onclick="clearCart()">Clear Cart</button>
+      <div id="clear-result" class="debug-output"></div>
+    </div>
+
+    <div class="debug-section">
+      <h2>Test Add to Cart</h2>
+      <label for="test-product">Product:</label>
+      <select id="test-product">
+        <option value="Yankees">Asics Gel-NYC Yankees</option>
+        <option value="Cream Arctic Sky">Asics Gel-NYC Cream Arctic Sky</option>
+        <option value="Ivory Clay Grey">Asics Gel-NYC Ivory Clay Grey</option>
+        <option value="Black Graphite Grey">Asics Gel-NYC Black Graphite Grey</option>
+      </select>
+      <label for="test-size">Size:</label>
+      <select id="test-size">
+        <option value="36">36</option>
+        <option value="37">37</option>
+        <option value="38">38</option>
+        <option value="39">39</option>
+        <option value="40">40</option>
+      </select>
+      <button onclick="testAddToCart()">Add to Cart</button>
+      <div id="add-result" class="debug-output"></div>
+    </div>
+
+    <div class="debug-section">
+      <h2>Mini Cart Display</h2>
+      <button onclick="showMiniCart()">Show Mini Cart</button>
+      <div id="mini-cart-display"></div>
+    </div>
+  </main>
+
+  <script src="scripts/main.js"></script>
+  <script>
+    function debugCart() {
+      const cart = JSON.parse(localStorage.getItem('cart') || '[]');
+      const debugDiv = document.getElementById('cart-debug');
+      
+      if (cart.length === 0) {
+        debugDiv.textContent = 'Cart is empty';
+        return;
+      }
+      
+      let output = `Cart contains ${cart.length} items:\n\n`;
+      
+      cart.forEach((item, index) => {
+        output += `Item ${index + 1}:\n`;
+        output += `  Name: ${item.name}\n`;
+        output += `  Color: ${item.color}\n`;
+        output += `  Size: ${item.size}\n`;
+        output += `  Price: ${item.price}\n`;
+        output += `  Quantity: ${item.quantity || item.qty}\n`;
+        output += `  Image: ${item.image}\n`;
+        output += `  ID: ${item.id}\n`;
+        output += `  Raw object: ${JSON.stringify(item, null, 2)}\n`;
+        output += `\n`;
+      });
+      
+      debugDiv.textContent = output;
+    }
+
+    function clearCart() {
+      localStorage.removeItem('cart');
+      document.getElementById('clear-result').textContent = 'Cart cleared!';
+      debugCart();
+    }
+
+    function testAddToCart() {
+      const productColor = document.getElementById('test-product').value;
+      const size = document.getElementById('test-size').value;
+      
+      // Set up the environment like on a product page
+      window.currentProductColor = productColor;
+      
+      // Get cart from localStorage
+      let cart = JSON.parse(localStorage.getItem('cart') || '[]');
+      
+      // Simulate adding item to cart
+      const productName = `Asics Gel-NYC ${productColor}`;
+      const price = 84.95;
+      const image = `images/asicsgelnyc-${productColor.toLowerCase().replace(/\s+/g, '')}.jpg`;
+      
+      // Check if item already exists
+      let found = false;
+      for (let item of cart) {
+        if (item.name === productName && item.color === productColor && item.size === size) {
+          item.quantity = (item.quantity || 1) + 1;
+          found = true;
+          break;
+        }
+      }
+      
+      if (!found) {
+        cart.push({
+          name: productName,
+          color: productColor,
+          size: size,
+          price: price,
+          quantity: 1,
+          image: image,
+          id: Date.now()
+        });
+      }
+      
+      // Save to localStorage
+      localStorage.setItem('cart', JSON.stringify(cart));
+      
+      document.getElementById('add-result').textContent = `Added ${productName} (${productColor}, ${size}) to cart`;
+      debugCart();
+    }
+
+    function showMiniCart() {
+      const cart = JSON.parse(localStorage.getItem('cart') || '[]');
+      const displayDiv = document.getElementById('mini-cart-display');
+      
+      if (cart.length === 0) {
+        displayDiv.innerHTML = '<div class="cart-item">Cart is empty</div>';
+        return;
+      }
+      
+      let html = '';
+      cart.forEach((item, index) => {
+        const productName = item.name || 'Unknown Product';
+        const productColor = item.color || 'Unknown Color';
+        const productSize = item.size || 'Unknown Size';
+        const price = item.price || 0;
+        const quantity = item.quantity || item.qty || 1;
+        const itemTotal = (price * quantity).toFixed(2);
+        
+        html += `
+          <div class="cart-item">
+            <strong>${productName}</strong><br>
+            Size: ${productSize} | Color: ${productColor}<br>
+            €${price} x ${quantity} = €${itemTotal}
+          </div>
+        `;
+      });
+      
+      displayDiv.innerHTML = html;
+    }
+
+    // Auto-debug on page load
+    window.addEventListener('load', function() {
+      debugCart();
+    });
+  </script>
+</body>
+</html>

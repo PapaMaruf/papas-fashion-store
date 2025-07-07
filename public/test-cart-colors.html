@@ -1,0 +1,130 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Test Cart Colors - Papa's Fashion</title>
+  <link rel="stylesheet" href="styles/main.css">
+  <style>
+    .test-section {
+      margin: 20px 0;
+      padding: 20px;
+      border: 1px solid #ddd;
+      border-radius: 8px;
+    }
+    .test-result {
+      background: #f0f0f0;
+      padding: 10px;
+      margin: 10px 0;
+      border-radius: 4px;
+      font-family: monospace;
+    }
+    .success { background: #d4edda; color: #155724; }
+    .error { background: #f8d7da; color: #721c24; }
+  </style>
+</head>
+<body>
+  <header>
+    <div class="header-brand">
+      <span>PAPA'S FASHION</span>
+      <img src="images/papasfashionlogo.png" alt="Papa's Fashion Logo" class="brand-logo" />
+    </div>
+  </header>
+
+  <main style="max-width:800px;margin:2rem auto;padding:1rem;">
+    <h1>Cart Color Test</h1>
+    <p>Testing cart color detection for all Asics Gel-NYC variants.</p>
+    
+    <div class="test-section">
+      <h2>Test 1: Yankees Color Detection</h2>
+      <button onclick="testColor('Yankees')">Test Yankees Color</button>
+      <div id="yankees-result" class="test-result"></div>
+    </div>
+
+    <div class="test-section">
+      <h2>Test 2: Cream Arctic Sky Color Detection</h2>
+      <button onclick="testColor('Cream Arctic Sky')">Test Cream Arctic Sky Color</button>
+      <div id="cream-result" class="test-result"></div>
+    </div>
+
+    <div class="test-section">
+      <h2>Test 3: Ivory Clay Grey Color Detection</h2>
+      <button onclick="testColor('Ivory Clay Grey')">Test Ivory Clay Grey Color</button>
+      <div id="ivory-result" class="test-result"></div>
+    </div>
+
+    <div class="test-section">
+      <h2>Test 4: Black Graphite Grey Color Detection</h2>
+      <button onclick="testColor('Black Graphite Grey')">Test Black Graphite Grey Color</button>
+      <div id="black-result" class="test-result"></div>
+    </div>
+
+    <div class="test-section">
+      <h2>Test 5: Cart Display Test</h2>
+      <button onclick="testCartDisplay()">Test Cart Display</button>
+      <div id="cart-result" class="test-result"></div>
+    </div>
+  </main>
+
+  <script src="scripts/main.js"></script>
+  <script>
+    function testColor(colorName) {
+      // Simulate setting window.currentProductColor
+      window.currentProductColor = colorName;
+      
+      // Test the color detection function
+      const productName = 'Asics Gel-NYC';
+      const detectedColor = window.detectProductColor ? window.detectProductColor(productName) : 'Function not found';
+      
+      const resultDiv = document.getElementById(colorName.toLowerCase().replace(/\s/g, '-').replace('cream-arctic-sky', 'cream') + '-result');
+      
+      if (detectedColor === colorName) {
+        resultDiv.innerHTML = `<span class="success">✓ SUCCESS: Detected color "${detectedColor}" matches expected "${colorName}"</span>`;
+        resultDiv.className = 'test-result success';
+      } else {
+        resultDiv.innerHTML = `<span class="error">✗ FAILED: Expected "${colorName}" but got "${detectedColor}"</span>`;
+        resultDiv.className = 'test-result error';
+      }
+    }
+
+    function testCartDisplay() {
+      // Test cart display with different colors
+      const testItem = {
+        name: 'Asics Gel-NYC',
+        price: 129.99,
+        size: 'US 9',
+        quantity: 1,
+        image: 'images/asicsgelnyc-yankees1.jpg'
+      };
+
+      const colors = ['Yankees', 'Cream Arctic Sky', 'Ivory Clay Grey', 'Black Graphite Grey'];
+      let results = '';
+
+      colors.forEach(color => {
+        window.currentProductColor = color;
+        const detectedColor = window.detectProductColor ? window.detectProductColor('Asics Gel-NYC') : 'Function not found';
+        
+        const cartItemName = `${testItem.name} - ${detectedColor}`;
+        
+        if (detectedColor === color) {
+          results += `<div class="success">✓ ${color}: Cart would show "${cartItemName}"</div>`;
+        } else {
+          results += `<div class="error">✗ ${color}: Expected "${testItem.name} - ${color}" but would show "${cartItemName}"</div>`;
+        }
+      });
+
+      document.getElementById('cart-result').innerHTML = results;
+    }
+
+    // Auto-run tests on page load
+    window.addEventListener('load', function() {
+      console.log('Testing cart color detection...');
+      if (window.detectProductColor) {
+        console.log('detectProductColor function is available');
+      } else {
+        console.log('detectProductColor function is NOT available');
+      }
+    });
+  </script>
+</body>
+</html>

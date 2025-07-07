@@ -1,0 +1,157 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>URL Test - Papa's Fashion</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            max-width: 800px;
+            margin: 0 auto;
+            padding: 20px;
+            background: #f5f5f5;
+        }
+        .test-section {
+            background: white;
+            padding: 20px;
+            margin: 20px 0;
+            border-radius: 8px;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+        }
+        .url-link {
+            display: block;
+            margin: 10px 0;
+            padding: 10px;
+            background: #667eea;
+            color: white;
+            text-decoration: none;
+            border-radius: 4px;
+            text-align: center;
+        }
+        .url-link:hover {
+            background: #5a67d8;
+        }
+        .status {
+            margin: 10px 0;
+            padding: 10px;
+            border-radius: 4px;
+        }
+        .success {
+            background: #d4edda;
+            color: #155724;
+            border: 1px solid #c3e6cb;
+        }
+        .error {
+            background: #f8d7da;
+            color: #721c24;
+            border: 1px solid #f5c6cb;
+        }
+    </style>
+</head>
+<body>
+    <h1>🔗 URL Test for Papa's Fashion</h1>
+    
+    <div class="test-section">
+        <h2>Stripe Redirect URLs</h2>
+        <p>These are the URLs that Stripe will redirect to after payment:</p>
+        
+        <h3>Success URL:</h3>
+        <a href="https://papasfashion.be/success.html?session_id=test123" class="url-link" target="_blank">
+            https://papasfashion.be/success.html?session_id=test123
+        </a>
+        
+        <h3>Cancel URL:</h3>
+        <a href="https://papasfashion.be/cancel.html" class="url-link" target="_blank">
+            https://papasfashion.be/cancel.html
+        </a>
+        
+        <div id="test-results"></div>
+    </div>
+    
+    <div class="test-section">
+        <h2>Local Testing</h2>
+        <p>Test the local versions of the pages:</p>
+        
+        <a href="success.html?session_id=test123" class="url-link" target="_blank">
+            Local Success Page
+        </a>
+        
+        <a href="cancel.html" class="url-link" target="_blank">
+            Local Cancel Page
+        </a>
+    </div>
+    
+    <div class="test-section">
+        <h2>Vercel Routing Test</h2>
+        <p>According to vercel.json, the routing should work as follows:</p>
+        <ul>
+            <li><strong>https://papasfashion.be/success.html</strong> → <strong>/src/success.html</strong></li>
+            <li><strong>https://papasfashion.be/cancel.html</strong> → <strong>/src/cancel.html</strong></li>
+        </ul>
+        
+        <p>This means the URLs in Stripe are correct and should work once deployed.</p>
+        
+        <div class="status success">
+            ✅ <strong>Fixed:</strong> Backend and API now use correct URLs:<br>
+            - Success: https://papasfashion.be/success.html?session_id={CHECKOUT_SESSION_ID}<br>
+            - Cancel: https://papasfashion.be/cancel.html
+        </div>
+    </div>
+    
+    <div class="test-section">
+        <h2>Stripe Integration Summary</h2>
+        <div class="status success">
+            <h3>✅ What was fixed:</h3>
+            <ol>
+                <li><strong>Backend URLs:</strong> Updated server.js to use correct domain</li>
+                <li><strong>API URLs:</strong> Updated create-checkout-session.js to use correct domain</li>
+                <li><strong>Vercel Routing:</strong> Confirmed routing configuration is correct</li>
+                <li><strong>Page Structure:</strong> Verified success.html and cancel.html exist in src folder</li>
+            </ol>
+            
+            <h3>✅ How it works:</h3>
+            <ol>
+                <li>User completes payment on Stripe</li>
+                <li>Stripe redirects to https://papasfashion.be/success.html</li>
+                <li>Vercel routes this to /src/success.html</li>
+                <li>User sees the success page</li>
+            </ol>
+        </div>
+    </div>
+    
+    <script>
+        // Test URL accessibility
+        async function testUrls() {
+            const results = document.getElementById('test-results');
+            
+            try {
+                // Test local success page
+                const successResponse = await fetch('success.html');
+                const cancelResponse = await fetch('cancel.html');
+                
+                const successStatus = successResponse.ok ? '✅' : '❌';
+                const cancelStatus = cancelResponse.ok ? '✅' : '❌';
+                
+                results.innerHTML = `
+                    <div class="status ${successResponse.ok && cancelResponse.ok ? 'success' : 'error'}">
+                        <h3>Local Page Test Results:</h3>
+                        <p>${successStatus} Success page: ${successResponse.ok ? 'Available' : 'Not found'}</p>
+                        <p>${cancelStatus} Cancel page: ${cancelResponse.ok ? 'Available' : 'Not found'}</p>
+                    </div>
+                `;
+            } catch (error) {
+                results.innerHTML = `
+                    <div class="status error">
+                        <h3>❌ Error testing URLs:</h3>
+                        <p>${error.message}</p>
+                    </div>
+                `;
+            }
+        }
+        
+        // Run test when page loads
+        testUrls();
+    </script>
+</body>
+</html>

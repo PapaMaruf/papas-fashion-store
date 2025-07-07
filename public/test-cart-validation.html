@@ -1,0 +1,205 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Cart Stock Validation Test - Papa's Fashion</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            max-width: 800px;
+            margin: 0 auto;
+            padding: 20px;
+            background: #f5f5f5;
+        }
+        .test-section {
+            background: white;
+            padding: 20px;
+            margin: 20px 0;
+            border-radius: 10px;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+        }
+        button {
+            background: #4CAF50;
+            color: white;
+            padding: 10px 20px;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+            margin: 5px;
+        }
+        button:hover { background: #45a049; }
+        button.danger { background: #dc3545; }
+        button.danger:hover { background: #c82333; }
+        .cart-preview {
+            border: 1px solid #ddd;
+            padding: 15px;
+            margin: 10px 0;
+            border-radius: 5px;
+            background: #fafafa;
+        }
+        h1 { color: #333; }
+        h2 { color: #666; margin-top: 30px; }
+        .note { 
+            background: #d1ecf1; 
+            color: #0c5460; 
+            padding: 15px; 
+            border-radius: 5px; 
+            margin: 20px 0; 
+            border-left: 4px solid #17a2b8;
+        }
+        .warning {
+            background: #fff3cd;
+            color: #856404;
+            padding: 15px;
+            border-radius: 5px;
+            margin: 20px 0;
+            border-left: 4px solid #ffc107;
+        }
+    </style>
+</head>
+<body>
+    <h1>Cart Stock Validation Test - Papa's Fashion</h1>
+    
+    <div class="note">
+        <strong>Test Instructions:</strong><br>
+        1. Add in-stock items to cart (should work normally)<br>
+        2. Add out-of-stock items to cart (should show "OUT OF STOCK" and disable checkout)<br>
+        3. Remove out-of-stock items (should enable checkout again)
+    </div>
+    
+    <div class="test-section">
+        <h2>Add Test Items to Cart</h2>
+        <p>Based on your current stock configuration:</p>
+        
+        <h3>✅ Items IN STOCK:</h3>
+        <button onclick="addToCart('Asics Gel-NYC Black Graphite Grey', 'Black Graphite Grey', '42', 84.95)">
+            Add Asics Black Size 42 (3 in stock)
+        </button>
+        <button onclick="addToCart('Ami Paris Sweater Black', 'Black', 'M', 49.95)">
+            Add Ami Paris Black M (22 in stock)
+        </button>
+        <button onclick="addToCart('FC Barcelona Limited Edition', 'Barcelona City', 'L', 89.95)">
+            Add Barcelona Jersey L (10 in stock)
+        </button>
+        
+        <h3>❌ Items OUT OF STOCK:</h3>
+        <button class="danger" onclick="addToCart('Asics Gel-NYC Black Graphite Grey', 'Black Graphite Grey', '44', 84.95)">
+            Add Asics Black Size 44 (OUT OF STOCK)
+        </button>
+        <button class="danger" onclick="addToCart('Asics Gel-NYC Cream Arctic Sky', 'Cream Arctic Sky', '36', 84.95)">
+            Add Asics Cream Size 36 (OUT OF STOCK)
+        </button>
+        <button class="danger" onclick="addToCart('Asics Gel-NYC Ivory Clay Grey', 'Ivory Clay Grey', '45', 84.95)">
+            Add Asics Ivory Size 45 (OUT OF STOCK)
+        </button>
+        
+        <h3>Cart Actions:</h3>
+        <button onclick="viewCart()">View Cart</button>
+        <button onclick="clearCart()">Clear Cart</button>
+        <button onclick="testCheckout()">Test Checkout</button>
+    </div>
+    
+    <div class="test-section">
+        <h2>Current Cart Status</h2>
+        <div id="cart-status">Cart is empty</div>
+        <div id="validation-status"></div>
+    </div>
+    
+    <div class="warning">
+        <strong>Note:</strong> This is a test page. The actual cart functionality will be tested on the main website.
+    </div>
+
+    <script src="scripts/main.js"></script>
+    <script>
+        function addToCart(name, color, size, price) {
+            let cart = JSON.parse(localStorage.getItem('cart') || '[]');
+            
+            // Check if item already exists
+            let found = false;
+            for (let item of cart) {
+                if (item.name === name && item.color === color && item.size === size) {
+                    item.qty++;
+                    found = true;
+                    break;
+                }
+            }
+            
+            if (!found) {
+                cart.push({ name, color, size, qty: 1, price });
+            }
+            
+            localStorage.setItem('cart', JSON.stringify(cart));
+            updateCartStatus();
+            alert(`Added ${name} (${color}) - Size ${size} to cart!`);
+        }
+        
+        function viewCart() {
+            // Redirect to main site cart
+            window.open('index.html#cart', '_blank');
+        }
+        
+        function clearCart() {
+            localStorage.removeItem('cart');
+            updateCartStatus();
+            alert('Cart cleared!');
+        }
+        
+        function testCheckout() {
+            const cart = JSON.parse(localStorage.getItem('cart') || '[]');
+            if (cart.length === 0) {
+                alert('Cart is empty! Add some items first.');
+                return;
+            }
+            
+            // Test stock validation
+            if (stockManager && stockManager.stockConfig) {
+                const validation = stockManager.validateCartStock();
+                if (validation.valid) {
+                    alert('✅ Cart is valid! Checkout would be enabled.');
+                } else {
+                    alert('❌ Cart has out-of-stock items! Checkout would be disabled.');
+                }
+            } else {
+                alert('Stock manager not loaded yet. Please wait and try again.');
+            }
+        }
+        
+        function updateCartStatus() {
+            const cart = JSON.parse(localStorage.getItem('cart') || '[]');
+            const statusDiv = document.getElementById('cart-status');
+            const validationDiv = document.getElementById('validation-status');
+            
+            if (cart.length === 0) {
+                statusDiv.innerHTML = 'Cart is empty';
+                validationDiv.innerHTML = '';
+                return;
+            }
+            
+            let html = '<h3>Cart Items:</h3>';
+            cart.forEach((item, index) => {
+                html += `<div>${item.name} (${item.color}) - Size ${item.size} - Qty: ${item.qty}</div>`;
+            });
+            statusDiv.innerHTML = html;
+            
+            // Test validation if stock manager is available
+            if (stockManager && stockManager.stockConfig) {
+                const validation = stockManager.validateCartStock();
+                if (validation.valid) {
+                    validationDiv.innerHTML = '<div style="color: green;">✅ All items in stock - Checkout would be enabled</div>';
+                } else {
+                    validationDiv.innerHTML = '<div style="color: red;">❌ Out of stock items detected - Checkout would be disabled</div>';
+                }
+            } else {
+                validationDiv.innerHTML = '<div style="color: orange;">⏳ Stock manager loading...</div>';
+            }
+        }
+        
+        // Update status on page load
+        setTimeout(updateCartStatus, 1000);
+        
+        // Update status every few seconds
+        setInterval(updateCartStatus, 3000);
+    </script>
+</body>
+</html>

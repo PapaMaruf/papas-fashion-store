@@ -1,0 +1,336 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Asics Gel-NYC Cream Arctic Sky - Product Details</title>
+  <link rel="stylesheet" href="styles/main.css">
+  <link href="https://fonts.googleapis.com/css2?family=Bebas+Neue&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+  <style>
+    #cart-popup {
+      opacity: 0;
+      pointer-events: none;
+      transition: opacity 0.38s cubic-bezier(0.4,0,0.2,1);
+    }
+    #cart-popup.popup-visible {
+      opacity: 1;
+      pointer-events: auto;
+    }
+    #cart-popup > div {
+      transform: translateY(40px) scale(0.98);
+      opacity: 0.7;
+      transition: transform 0.38s cubic-bezier(0.4,0,0.2,1), opacity 0.38s cubic-bezier(0.4,0,0.2,1);
+    }
+    #cart-popup.popup-visible > div {
+      transform: translateY(0) scale(1);
+      opacity: 1;
+    }
+  </style>
+</head>
+<body>
+  <header>
+    <!-- Hamburger menu button -->
+    <button id="menu-btn" class="menu-btn" aria-label="Open navigation">
+      <span></span>
+      <span></span>
+      <span></span>
+    </button>
+    <div class="header-brand">
+      <span>PAPA'S FASHION</span>
+      <img src="images/papasfashionlogo.png" alt="Papa's Fashion Logo" class="brand-logo" />
+    </div>
+    <div class="header-actions">
+      <button class="contact-btn" onclick="window.location.href='contact.html'">
+        <i class="fas fa-envelope"></i> <span>Contact Us</span>
+      </button>
+    </div>
+  </header>
+  <!-- Navigation menu -->
+  <nav id="side-nav" class="side-nav">
+    <ul>
+      <li>
+        <a href="index.html#home" id="nav-home">
+          <!-- Home SVG icon -->
+          <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" style="vertical-align:middle;margin-right:6px;" viewBox="0 0 24 24" fill="none" stroke="#333" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+            <path d="M3 9l9-7 9 7"></path>
+            <path d="M9 22V12h6v10"></path>
+          </svg>
+          Home
+        </a>
+      </li>
+      <li><a href="index.html#sneakers" id="nav-sneakers">Sneakers</a></li>
+      <li><a href="index.html#sweaters" id="nav-sweaters">Sweaters</a></li>
+      <li><a href="index.html#jerseys" id="nav-jerseys">Football Jerseys</a></li>
+      <li><a href="index.html#beanies" id="nav-beanies">Beanies</a></li>
+    </ul>
+  </nav>
+  <main style="max-width:600px;margin:2rem auto 1rem auto;padding:1rem;background:#fff;border-radius:12px;box-shadow:0 2px 8px rgba(0,0,0,0.07);">
+    <div id="slider" style="position:relative;max-width:350px;margin:0 auto 1.5rem auto;">
+      <button id="zoom-btn" style="position:absolute;top:8px;left:8px;z-index:2;background:rgba(0,0,0,0.6);color:#fff;border:none;border-radius:50%;width:32px;height:32px;cursor:pointer;font-size:1.2rem;">🔍</button>
+      <img src="images/asicsgelnyc-creamarcticsky1.webp" alt="Asics Gel-NYC Cream Arctic Sky" id="slider-img" style="width:100%;height:350px;object-fit:contain;object-position:center;border-radius:16px;transition:opacity 0.3s;background:#ffffff;padding:16px;box-sizing:border-box;box-shadow:0 8px 24px rgba(0,0,0,0.12);">
+      <button id="prev-btn" style="position:absolute;top:50%;left:0;transform:translateY(-50%);background:rgba(0,0,0,0.28);color:#fff;border:none;border-radius:50%;width:40px;height:40px;cursor:pointer;font-size:1.6rem;opacity:0.82;line-height:1;display:flex;align-items:center;justify-content:center;touch-action:manipulation;">&#8592;</button>
+      <button id="next-btn" style="position:absolute;top:50%;right:0;transform:translateY(-50%);background:rgba(0,0,0,0.28);color:#fff;border:none;border-radius:50%;width:40px;height:40px;cursor:pointer;font-size:1.6rem;opacity:0.82;line-height:1;display:flex;align-items:center;justify-content:center;touch-action:manipulation;">&#8594;</button>
+    </div>
+    <div class="product-thumbs" style="margin-bottom: 1.5rem;">
+      <img src="images/asicsgelnyc-creamarcticsky1.webp" alt="Asics Gel-NYC Side" class="thumb-img selected" onclick="showImg(0)">
+      <img src="images/asicsgelnyc-creamarcticsky2.webp" alt="Asics Gel-NYC Top" class="thumb-img" onclick="showImg(1)">
+    </div>    <h2 style="text-align:center;">Asics Gel-NYC Cream Arctic Sky</h2>
+    <div style="text-align:center;margin-bottom:1.2rem;">
+      <span style="color:#888;text-decoration:line-through;font-size:1.1rem;">€249,95</span>
+      <span style="color:#d32f2f;font-weight:bold;font-size:1.3rem;margin-left:10px;">€84,95</span>
+    </div>
+      <div class="color-selector" aria-label="Choose color" style="text-align:center;margin-bottom:1.5rem;">
+        <button class="color-circle cream selected" aria-label="Cream Arctic Sky color" tabindex="0" style="width:30px;height:30px;border-radius:50%;border:3px solid #667eea;background:linear-gradient(135deg,#f5f5dc 0%,#e6e6fa 50%,#87ceeb 100%);margin-right:10px;box-shadow:0 2px 6px rgba(102,126,234,0.3);"></button>
+        <a href="product-asicsgelnyc-ivoryclaygrey.html" tabindex="0">
+          <button class="color-circle ivory" aria-label="Ivory Clay Grey color" style="width:30px;height:30px;border-radius:50%;border:2px solid #e2e8f0;background:linear-gradient(135deg,#ffffff 0%,#f8f8f8 30%,#5D4037 50%,#2c2c2c 80%,#1a1a1a 100%);margin-right:10px;cursor:pointer;box-shadow:0 2px 4px rgba(0,0,0,0.1);"></button>
+        </a>
+        <a href="product-asicsgelnyc-blackgraphitegrey.html" tabindex="0">
+          <button class="color-circle black-graphite" aria-label="Black Graphite Grey color" style="width:30px;height:30px;border-radius:50%;border:2px solid #e2e8f0;background:linear-gradient(135deg,#1a1a1a 70%,#4a4a4a 100%);margin-right:10px;cursor:pointer;box-shadow:0 2px 4px rgba(0,0,0,0.1);"></button>
+        </a>
+        <a href="product-asicsgelnyc-yankees.html" tabindex="0">
+          <button class="color-circle yankees" aria-label="Yankees color" style="width:30px;height:30px;border-radius:50%;border:2px solid #e2e8f0;background:linear-gradient(135deg,#132448 70%,#ffffff 100%);cursor:pointer;box-shadow:0 2px 4px rgba(0,0,0,0.1);"></button>
+        </a>
+      </div>
+      <div class="size-selector" aria-label="Choose size" style="text-align:center;margin-bottom:1.5rem;">
+        <button class="size-btn" type="button" style="width:50px;height:40px;border:none;border-radius:5px;background:#f0f0f0;margin:0 3px 5px 3px;cursor:pointer;font-size:0.9rem;">36</button>
+        <button class="size-btn" type="button" style="width:50px;height:40px;border:none;border-radius:5px;background:#f0f0f0;margin:0 3px 5px 3px;cursor:pointer;font-size:0.9rem;">37</button>
+        <button class="size-btn" type="button" style="width:50px;height:40px;border:none;border-radius:5px;background:#f0f0f0;margin:0 3px 5px 3px;cursor:pointer;font-size:0.9rem;">37.5</button>
+        <button class="size-btn" type="button" style="width:50px;height:40px;border:none;border-radius:5px;background:#f0f0f0;margin:0 3px 5px 3px;cursor:pointer;font-size:0.9rem;">38</button>
+        <button class="size-btn" type="button" style="width:50px;height:40px;border:none;border-radius:5px;background:#f0f0f0;margin:0 3px 5px 3px;cursor:pointer;font-size:0.9rem;">39</button>
+        <button class="size-btn" type="button" style="width:50px;height:40px;border:none;border-radius:5px;background:#f0f0f0;margin:0 3px 5px 3px;cursor:pointer;font-size:0.9rem;">40</button>
+        <button class="size-btn" type="button" style="width:50px;height:40px;border:none;border-radius:5px;background:#f0f0f0;margin:0 3px 5px 3px;cursor:pointer;font-size:0.9rem;">41.5</button>
+        <button class="size-btn" type="button" style="width:50px;height:40px;border:none;border-radius:5px;background:#f0f0f0;margin:0 3px 5px 3px;cursor:pointer;font-size:0.9rem;">42</button>
+        <button class="size-btn" type="button" style="width:50px;height:40px;border:none;border-radius:5px;background:#f0f0f0;margin:0 3px 5px 3px;cursor:pointer;font-size:0.9rem;">42.5</button>
+        <button class="size-btn" type="button" style="width:50px;height:40px;border:none;border-radius:5px;background:#f0f0f0;margin:0 3px 5px 3px;cursor:pointer;font-size:0.9rem;">43.5</button>
+        <button class="size-btn" type="button" style="width:50px;height:40px;border:none;border-radius:5px;background:#f0f0f0;margin:0 3px 5px 3px;cursor:pointer;font-size:0.9rem;">44</button>
+        <button class="size-btn" type="button" style="width:50px;height:40px;border:none;border-radius:5px;background:#f0f0f0;margin:0 3px 5px 3px;cursor:pointer;font-size:0.9rem;">45</button>
+      </div>
+      <div class="product-actions" style="display:flex;justify-content:center;align-items:center;margin-bottom:1.5rem;">
+        <button class="cart-btn" type="button" aria-label="Add to cart" style="width:100%;height:48px;border:none;border-radius:6px;background:#4CAF50;color:#fff;font-size:1.18rem;cursor:pointer;display:flex;align-items:center;justify-content:center;font-weight:600;gap:10px;">
+          <svg class="cart-icon" xmlns="http://www.w3.org/2000/svg" width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" style="margin-right:5px;"><circle cx="9" cy="21" r="1.5"/><circle cx="19" cy="21" r="1.5"/><path d="M2.5 3h2l2.2 13.2a2 2 0 0 0 2 1.8h7.6a2 2 0 0 0 2-1.7l1.2-7.3H6.1"/></svg>
+          ADD TO YOUR CART
+        </button>
+      </div>
+      <h3>Specifications</h3>
+      <ul style="line-height:1.7;font-size:1.05rem;">
+        <li>Brand: Asics</li>
+        <li>Model: Gel-NYC</li>
+        <li>Color: Cream Arctic Sky</li>
+        <li>Material: Mesh & Suede</li>
+        <li>Comfortable GEL™ technology cushioning</li>
+        <li>Lightweight and breathable</li>
+        <li>Style: Unisex</li>
+      </ul>
+      <h3>Description</h3>
+      <p style="font-size:1.05rem;">The Asics Gel-NYC Cream Arctic Sky combines retro running style with modern comfort. Featuring a unique colorway and advanced GEL™ cushioning, these sneakers are perfect for everyday wear and street style.</p>
+      <a href="index.html#sneakers" style="display:inline-block;margin-top:2rem;color:#fff;background:#222;padding:0.7rem 1.5rem;border-radius:6px;text-decoration:none;">Back to Sneakers</a>
+  </main>
+  
+  <footer>
+    <div class="footer-content">
+        <div class="footer-section">
+            <h3>Papa's Fashion</h3>
+            <p>Premium fashion for the modern lifestyle</p>
+        </div>
+        <div class="footer-section">
+            <h4>Quick Links</h4>
+            <ul>
+                <li><a href="index.html">Home</a></li>
+                <li><a href="return-policy.html">Return Policy</a></li>
+                <li><a href="contact.html">Contact Us</a></li>
+            </ul>
+        </div>
+        <div class="footer-section">
+            <h4>Follow Us</h4>
+            <div class="social-links">
+                <a href="https://instagram.com/papasfashion9k" target="_blank">📱 Instagram</a>
+                <a href="https://snapchat.com/add/papasfashion9k" target="_blank">👻 Snapchat</a>
+                <a href="https://tiktok.com/@papasfashion9k" target="_blank">🎵 TikTok</a>
+            </div>
+        </div>
+    </div>
+    <div class="footer-bottom">
+        <p>&copy; 2025 Papa's Fashion. All rights reserved.</p>
+    </div>
+  </footer>
+  <div id="zoom-modal" style="display:none;position:fixed;z-index:9999;top:0;left:0;width:100vw;height:100vh;background:rgba(0,0,0,0.85);align-items:center;justify-content:center;">
+    <img id="zoom-img" src="" style="max-width:90vw;max-height:90vh;cursor:zoom-in;transition:transform 0.2s;">
+    <button id="close-zoom" style="position:absolute;top:24px;right:24px;background:#fff;color:#222;border:none;border-radius:50%;width:36px;height:36px;font-size:1.5rem;cursor:pointer;">&times;</button>
+  </div>
+  <div id="cart-popup" style="display:none;position:fixed;z-index:99999;top:0;left:0;width:100vw;height:100vh;background:rgba(0,0,0,0.32);align-items:center;justify-content:center;">
+    <div style="background:#fff;padding:2.2rem 2.2rem 1.5rem 2.2rem;border-radius:16px;box-shadow:0 4px 24px rgba(0,0,0,0.18);text-align:center;max-width:90vw;">
+      <div style="font-size:1.25rem;font-weight:500;margin-bottom:1.2rem;color:#222;">Product added to cart!</div>
+      <button id="continue-shopping" style="margin:0 1.2em 0 0;padding:0.7em 1.5em;font-size:1.1rem;background:#0078ff;color:#fff;border:none;border-radius:8px;cursor:pointer;">Continue Shopping</button>
+      <button id="goto-cart" style="padding:0.7em 1.5em;font-size:1.1rem;background:#222;color:#fff;border:none;border-radius:8px;cursor:pointer;">Go To Shopping Cart</button>
+    </div>
+  </div>
+  <script>
+    const images = [
+      'images/asicsgelnyc-creamarcticsky1.webp',
+      'images/asicsgelnyc-creamarcticsky2.webp'
+    ];
+    let current = 0;
+    const sliderImg = document.getElementById('slider-img');
+    const prevBtn = document.getElementById('prev-btn');
+    const nextBtn = document.getElementById('next-btn');
+    const zoomBtn = document.getElementById('zoom-btn');
+    const zoomModal = document.getElementById('zoom-modal');
+    const zoomImg = document.getElementById('zoom-img');
+    const closeZoom = document.getElementById('close-zoom');
+    function showImg(idx) {
+      current = idx;
+      const sliderImg = document.getElementById('slider-img');
+      sliderImg.style.opacity = '0';
+      setTimeout(() => {
+        sliderImg.src = images[idx];
+        sliderImg.style.opacity = '1';
+        const thumbnails = document.querySelectorAll('.product-thumbs .thumb-img');
+        thumbnails.forEach((img, i) => {
+          img.classList.remove('selected');
+          if (i === idx) {
+            img.classList.add('selected');
+          }
+        });
+      }, 200);
+    }
+    prevBtn.onclick = function() {
+      current = (current - 1 + images.length) % images.length;
+      showImg(current);
+    };
+    nextBtn.onclick = function() {
+      current = (current + 1) % images.length;
+      showImg(current);
+    };
+    zoomBtn.onclick = function() {
+      zoomImg.src = images[current];
+      zoomImg.style.transform = 'scale(1)';
+      zoomModal.style.display = 'flex';
+    };
+    closeZoom.onclick = function() {
+      zoomModal.style.display = 'none';
+    };
+    let zoomLevel = 1;
+    zoomImg.onclick = function() {
+      zoomLevel = zoomLevel === 1 ? 2.2 : 1;
+      zoomImg.style.transform = `scale(${zoomLevel})`;
+      zoomImg.style.cursor = zoomLevel === 1 ? 'zoom-in' : 'zoom-out';
+    };
+    // Swipe support
+    let startX = null;
+    sliderImg.addEventListener('touchstart', function(e) {
+      startX = e.touches[0].clientX;
+    });
+    sliderImg.addEventListener('touchend', function(e) {
+      if (startX === null) return;
+      let endX = e.changedTouches[0].clientX;
+      let diff = endX - startX;
+      if (Math.abs(diff) > 40) {
+        if (diff < 0) {
+          nextBtn.click();
+        } else {
+          prevBtn.click();
+        }
+      }
+      startX = null;
+    });
+  </script>
+  <script>
+    // Add to cart logic for product page with popup
+    document.addEventListener('DOMContentLoaded', function() {
+      function showCartPopup() {
+        const popup = document.getElementById('cart-popup');
+        popup.style.display = 'flex';
+        setTimeout(() => popup.classList.add('popup-visible'), 10);
+      }
+      function hideCartPopup() {
+        const popup = document.getElementById('cart-popup');
+        popup.classList.remove('popup-visible');
+        setTimeout(() => { popup.style.display = 'none'; }, 380);
+      }
+      document.querySelectorAll('.cart-btn').forEach(btn => {
+        btn.addEventListener('click', function() {
+          let name = 'Asics Gel-NYC Cream Arctic Sky';
+          let color = 'Cream Arctic Sky';
+          
+          // Set global variable for cart system
+          window.currentProductColor = color;
+          let size = document.querySelector('.size-btn.selected')?.textContent || '42';
+          if (!document.querySelector('.size-btn.selected')) {
+            let firstBtn = document.querySelector('.size-btn');
+            if (firstBtn) size = firstBtn.textContent;
+          }
+          let cart = JSON.parse(localStorage.getItem('cart') || '[]');
+          let found = false;
+          for (let item of cart) {
+            if (item.name === name && item.color === color && item.size === size) {
+              item.qty++;
+              found = true;
+              break;
+            }
+          }
+          if (!found) {
+            cart.push({ name, color, size, qty: 1 });
+          }
+          localStorage.setItem('cart', JSON.stringify(cart));
+          showCartPopup();
+        });
+      });
+      // Size button selection
+      document.querySelectorAll('.size-btn').forEach(btn => {
+        btn.addEventListener('click', function() {
+          document.querySelectorAll('.size-btn').forEach(b => b.classList.remove('selected'));
+          btn.classList.add('selected');
+        });
+      });
+      // Popup button logic
+      document.getElementById('continue-shopping').onclick = hideCartPopup;
+      document.getElementById('goto-cart').onclick = function() {
+        window.location.href = 'index.html#cart';
+      };
+    });
+  </script>
+  <script>
+    // Hamburger menu functionality
+    document.addEventListener('DOMContentLoaded', function() {
+      const menuBtn = document.getElementById('menu-btn');
+      const sideNav = document.getElementById('side-nav');
+      
+      if (menuBtn && sideNav) {
+        menuBtn.addEventListener('click', function() {
+          sideNav.classList.toggle('active');
+          menuBtn.classList.toggle('active');
+        });
+
+        // Close menu when clicking outside
+        document.addEventListener('click', function(e) {
+          if (!sideNav.contains(e.target) && !menuBtn.contains(e.target)) {
+            sideNav.classList.remove('active');
+            menuBtn.classList.remove('active');
+          }
+        });
+
+        // Close menu when clicking on a nav link
+        sideNav.querySelectorAll('a').forEach(link => {
+          link.addEventListener('click', function() {
+            sideNav.classList.remove('active');
+            menuBtn.classList.remove('active');
+          });
+        });
+      }
+    });
+  </script>
+  <script src="scripts/main.js"></script>
+  <script>
+    // Initialize stock management for this product
+    document.addEventListener('DOMContentLoaded', function() {
+        // Wait for stock manager to load
+        setTimeout(() => {
+            if (stockManager && stockManager.stockConfig) {
+                stockManager.updateSizeButtonStatus('asics-gel-nyc', 'cream-arctic-sky');
+            }
+        }, 1000);
+    });
+  </script>
+</body>
+</html>

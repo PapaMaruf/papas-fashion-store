@@ -1,0 +1,273 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>FC Barcelona Limited Edition 'Barcelona City' - Product Details</title>
+  <link rel="stylesheet" href="styles/main.css">
+  <link href="https://fonts.googleapis.com/css2?family=Bebas+Neue&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+  <style>
+    #cart-popup {
+      opacity: 0;
+      pointer-events: none;
+      transition: opacity 0.38s cubic-bezier(0.4,0,0.2,1);
+    }
+    #cart-popup.popup-visible {
+      opacity: 1;
+      pointer-events: auto;
+    }
+    #cart-popup > div {
+      transform: translateY(40px) scale(0.98);
+      opacity: 0.7;
+      transition: transform 0.38s cubic-bezier(0.4,0,0.2,1), opacity 0.38s cubic-bezier(0.4,0,0.2,1);
+    }
+    #cart-popup.popup-visible > div {
+      transform: translateY(0) scale(1);
+      opacity: 1;
+    }
+  </style>
+</head>
+<body>
+  <header>
+    <!-- Hamburger menu button -->
+    <button id="menu-btn" class="menu-btn" aria-label="Open navigation">
+      <span></span>
+      <span></span>
+      <span></span>
+    </button>
+    <div class="header-brand">
+      <span>PAPA'S FASHION</span>
+      <img src="images/papasfashionlogo.png" alt="Papa's Fashion Logo" class="brand-logo" />
+    </div>
+    <div class="header-actions">
+      <button class="contact-btn" onclick="window.location.href='contact.html'">
+        <i class="fas fa-envelope"></i> <span>Contact Us</span>
+      </button>
+    </div>
+  </header>
+  <!-- Navigation menu -->
+  <nav id="side-nav" class="side-nav">
+    <ul>
+      <li>
+        <a href="index.html#home" id="nav-home">
+          <!-- Home SVG icon -->
+          <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" style="vertical-align:middle;margin-right:6px;" viewBox="0 0 24 24" fill="none" stroke="#333" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+            <path d="M3 9l9-7 9 7"></path>
+            <path d="M9 22V12h6v10"></path>
+          </svg>
+          Home
+        </a>
+      </li>
+      <li><a href="index.html#sneakers" id="nav-sneakers">Sneakers</a></li>
+      <li><a href="index.html#sweaters" id="nav-sweaters">Sweaters</a></li>
+      <li><a href="index.html#jerseys" id="nav-jerseys">Football Jerseys</a></li>
+      <li><a href="index.html#beanies" id="nav-beanies">Beanies</a></li>
+    </ul>
+  </nav>
+  <main style="max-width:600px;margin:2rem auto 1rem auto;padding:1rem;background:#fff;border-radius:12px;box-shadow:0 2px 8px rgba(0,0,0,0.07);">
+    <div id="slider" style="position:relative;max-width:350px;margin:0 auto 1.5rem auto;">
+      <button id="zoom-btn" style="position:absolute;top:8px;left:8px;z-index:2;background:rgba(0,0,0,0.6);color:#fff;border:none;border-radius:50%;width:32px;height:32px;cursor:pointer;font-size:1.2rem;">🔍</button>
+      <img src="images/fcbarcelona-limitededitionbarcelonacity1.jpg" alt="FC Barcelona Limited Edition 'Barcelona City'" id="slider-img" style="width:100%;height:350px;object-fit:contain;object-position:center;border-radius:16px;transition:opacity 0.3s;background:#ffffff;padding:16px;box-sizing:border-box;box-shadow:0 8px 24px rgba(0,0,0,0.12);">
+      <button id="prev-btn" style="position:absolute;top:50%;left:0;transform:translateY(-50%);background:rgba(0,0,0,0.28);color:#fff;border:none;border-radius:50%;width:40px;height:40px;cursor:pointer;font-size:1.6rem;opacity:0.82;line-height:1;display:flex;align-items:center;justify-content:center;touch-action:manipulation;">&#8592;</button>
+      <button id="next-btn" style="position:absolute;top:50%;right:0;transform:translateY(-50%);background:rgba(0,0,0,0.28);color:#fff;border:none;border-radius:50%;width:40px;height:40px;cursor:pointer;font-size:1.6rem;opacity:0.82;line-height:1;display:flex;align-items:center;justify-content:center;touch-action:manipulation;">&#8594;</button>
+    </div>
+    <div class="product-thumbs" style="margin-bottom: 1.5rem;">
+      <img src="images/fcbarcelona-limitededitionbarcelonacity1.jpg" alt="FC Barcelona Front" class="thumb-img selected" onclick="showImg(0)">
+      <img src="images/fcbarcelona-limitededitionbarcelonacity2.jpg" alt="FC Barcelona Back" class="thumb-img" onclick="showImg(1)">
+    </div>
+    <h2 style="text-align:center;">FC Barcelona Limited Edition 'Barcelona City'</h2>
+    <div style="text-align:center;margin-bottom:1.2rem;">
+      <span style="color:#888;text-decoration:line-through;font-size:1.1rem;">€79,95</span>
+      <span style="color:#d32f2f;font-weight:bold;font-size:1.3rem;margin-left:10px;">€29,95</span>
+    </div>
+    <div class="size-selector" aria-label="Choose size" style="text-align:center;margin-bottom:1.5rem;">
+      <button class="size-btn" type="button" style="width:40px;height:40px;border:none;border-radius:5px;background:#f0f0f0;margin:0 5px;cursor:pointer;font-size:1rem;">S</button>
+      <button class="size-btn" type="button" style="width:40px;height:40px;border:none;border-radius:5px;background:#f0f0f0;margin:0 5px;cursor:pointer;font-size:1rem;">M</button>
+      <button class="size-btn" type="button" style="width:40px;height:40px;border:none;border-radius:5px;background:#f0f0f0;margin:0 5px;cursor:pointer;font-size:1rem;">L</button>
+      <button class="size-btn" type="button" style="width:40px;height:40px;border:none;border-radius:5px;background:#f0f0f0;margin:0 5px;cursor:pointer;font-size:1rem;">XL</button>
+      <button class="size-btn" type="button" style="width:40px;height:40px;border:none;border-radius:5px;background:#f0f0f0;margin:0 5px;cursor:pointer;font-size:1rem;">XXL</button>
+    </div>
+    <div class="product-actions" style="display:flex;justify-content:center;align-items:center;margin-bottom:1.5rem;">
+      <button class="cart-btn" type="button" aria-label="Add to cart" style="width:100%;height:48px;border:none;border-radius:6px;background:#4CAF50;color:#fff;font-size:1.18rem;cursor:pointer;display:flex;align-items:center;justify-content:center;font-weight:600;gap:10px;">
+        <svg class="cart-icon" xmlns="http://www.w3.org/2000/svg" width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" style="margin-right:5px;"><circle cx="9" cy="21" r="1.5"/><circle cx="19" cy="21" r="1.5"/><path d="M2.5 3h2l2.2 13.2a2 2 0 0 0 2 1.8h7.6a2 2 0 0 0 2-1.7l1.2-7.3H6.1"/></svg>
+        ADD TO YOUR CART
+      </button>
+    </div>
+    <h3>Specifications</h3>
+    <ul style="line-height:1.7;font-size:1.05rem;">
+      <li>Team: FC Barcelona</li>
+      <li>Edition: Limited Edition 'Barcelona City'</li>
+      <li>Material: 100% Polyester (Dri-FIT Technology)</li>
+      <li>Color: Deep Blue/Maroon</li>
+      <li>Fit: Stadium Fit</li>
+      <li>Official club crest and sponsors</li>
+      <li>Moisture-wicking fabric</li>
+      <li>Machine washable</li>
+    </ul>
+    <h3>Description</h3>
+    <p style="font-size:1.05rem;">Show your support for FC Barcelona with this limited edition Barcelona City jersey. Featuring the iconic club colors and official crest, this jersey combines premium materials with cutting-edge Dri-FIT technology for ultimate comfort and performance.</p>
+    <a href="index.html#jerseys" style="display:inline-block;margin-top:2rem;color:#fff;background:#222;padding:0.7rem 1.5rem;border-radius:6px;text-decoration:none;">Back to Jerseys</a>
+  </main>
+  
+  <footer>
+    <div class="footer-content">
+        <div class="footer-section">
+            <h3>Papa's Fashion</h3>
+            <p>Premium fashion for the modern lifestyle</p>
+        </div>
+        <div class="footer-section">
+            <h4>Quick Links</h4>
+            <ul>
+                <li><a href="index.html">Home</a></li>
+                <li><a href="return-policy.html">Return Policy</a></li>
+                <li><a href="contact.html">Contact Us</a></li>
+            </ul>
+        </div>
+        <div class="footer-section">
+            <h4>Follow Us</h4>
+            <div class="social-links">
+                <a href="https://instagram.com/papasfashion9k" target="_blank">📱 Instagram</a>
+                <a href="https://snapchat.com/add/papasfashion9k" target="_blank">👻 Snapchat</a>
+                <a href="https://tiktok.com/@papasfashion9k" target="_blank">🎵 TikTok</a>
+            </div>
+        </div>
+    </div>
+    <div class="footer-bottom">
+        <p>&copy; 2025 Papa's Fashion. All rights reserved.</p>
+    </div>
+  </footer>
+  <div id="zoom-modal" style="display:none;position:fixed;z-index:9999;top:0;left:0;width:100vw;height:100vh;background:rgba(0,0,0,0.85);align-items:center;justify-content:center;">
+    <img id="zoom-img" src="" style="max-width:90vw;max-height:90vh;cursor:zoom-in;transition:transform 0.2s;">
+    <button id="close-zoom" style="position:absolute;top:24px;right:24px;background:#fff;color:#222;border:none;border-radius:50%;width:36px;height:36px;font-size:1.5rem;cursor:pointer;">&times;</button>
+  </div>
+  <div id="cart-popup" style="display:none;position:fixed;z-index:99999;top:0;left:0;width:100vw;height:100vh;background:rgba(0,0,0,0.32);align-items:center;justify-content:center;">
+    <div style="background:#fff;padding:2.2rem 2.2rem 1.5rem 2.2rem;border-radius:16px;box-shadow:0 4px 24px rgba(0,0,0,0.18);text-align:center;max-width:90vw;">
+      <div style="font-size:1.25rem;font-weight:500;margin-bottom:1.2rem;color:#222;">Product added to cart!</div>
+      <button id="continue-shopping" style="margin:0 1.2em 0 0;padding:0.7em 1.5em;font-size:1.1rem;background:#0078ff;color:#fff;border:none;border-radius:8px;cursor:pointer;">Continue Shopping</button>
+      <button id="goto-cart" style="padding:0.7em 1.5em;font-size:1.1rem;background:#222;color:#fff;border:none;border-radius:8px;cursor:pointer;">Go To Shopping Cart</button>
+    </div>
+  </div>
+  <script>
+    const images = [
+      'images/fcbarcelona-limitededitionbarcelonacity1.jpg',
+      'images/fcbarcelona-limitededitionbarcelonacity2.jpg'
+    ];
+    let currentImg = 0;
+
+    function showImg(index) {
+      currentImg = index;
+      const sliderImg = document.getElementById('slider-img');
+      sliderImg.style.opacity = '0';
+      setTimeout(() => {
+        sliderImg.src = images[index];
+        sliderImg.style.opacity = '1';
+      }, 150);
+      document.querySelectorAll('.thumb-img').forEach(thumb => thumb.classList.remove('selected'));
+      document.querySelectorAll('.thumb-img')[index].classList.add('selected');
+    }
+
+    document.getElementById('prev-btn').addEventListener('click', () => {
+      currentImg = currentImg > 0 ? currentImg - 1 : images.length - 1;
+      showImg(currentImg);
+    });
+
+    document.getElementById('next-btn').addEventListener('click', () => {
+      currentImg = currentImg < images.length - 1 ? currentImg + 1 : 0;
+      showImg(currentImg);
+    });
+
+    // Size selection
+    document.querySelectorAll('.size-btn').forEach(btn => {
+      btn.addEventListener('click', () => {
+        document.querySelectorAll('.size-btn').forEach(b => b.style.background = '#f0f0f0');
+        btn.style.background = '#4CAF50';
+        btn.style.color = '#fff';
+      });
+    });
+
+    // Zoom functionality
+    const zoomBtn = document.getElementById('zoom-btn');
+    const zoomModal = document.getElementById('zoom-modal');
+    const zoomImg = document.getElementById('zoom-img');
+    const closeZoom = document.getElementById('close-zoom');
+
+    zoomBtn.addEventListener('click', () => {
+      zoomImg.src = images[currentImg];
+      zoomModal.style.display = 'flex';
+    });
+
+    closeZoom.addEventListener('click', () => {
+      zoomModal.style.display = 'none';
+    });
+
+    zoomModal.addEventListener('click', (e) => {
+      if (e.target === zoomModal) {
+        zoomModal.style.display = 'none';
+      }
+    });
+
+    // Cart functionality
+    const cartBtn = document.querySelector('.cart-btn');
+    const cartPopup = document.getElementById('cart-popup');
+    const continueShoppingBtn = document.getElementById('continue-shopping');
+    const gotoCartBtn = document.getElementById('goto-cart');
+
+    cartBtn.addEventListener('click', () => {
+      const selectedSize = document.querySelector('.size-btn[style*="background: rgb(76, 175, 80)"]') || 
+                          document.querySelector('.size-btn[style*="background:#4CAF50"]');
+      if (!selectedSize) {
+        alert('Please select a size');
+        return;
+      }
+
+      // Set global variable for cart system
+      window.currentProductColor = 'Barcelona City';
+
+      const product = {
+        name: 'FC Barcelona Limited Edition Barcelona City',
+        color: 'Barcelona City',
+        price: 89.95,
+        size: selectedSize.textContent,
+        image: 'images/fcbarcelona-limitededitionbarcelonacity1.jpg',
+        id: 'fcbarcelona-limitededitionbarcelonacity-' + selectedSize.textContent.toLowerCase(),
+        qty: 1 // Use qty for consistency with backend
+      };
+
+      let cart = JSON.parse(localStorage.getItem('cart') || '[]');
+      const existingItem = cart.find(item => item.name === product.name && item.color === product.color && item.size === product.size);
+      
+      if (existingItem) {
+        existingItem.qty = (existingItem.qty || existingItem.quantity || 0) + 1;
+      } else {
+        cart.push(product);
+      }
+
+      localStorage.setItem('cart', JSON.stringify(cart));
+      
+      cartPopup.style.display = 'flex';
+      setTimeout(() => cartPopup.classList.add('popup-visible'), 10);
+    });
+
+    continueShoppingBtn.addEventListener('click', () => {
+      cartPopup.classList.remove('popup-visible');
+      setTimeout(() => cartPopup.style.display = 'none', 380);
+    });
+
+    gotoCartBtn.addEventListener('click', () => {
+      window.location.href = 'index.html#cart';
+    });
+
+    // Initialize stock management for this product
+    document.addEventListener('DOMContentLoaded', function() {
+        // Wait for stock manager to load
+        setTimeout(() => {
+            if (stockManager && stockManager.stockConfig) {
+                stockManager.updateSizeButtonStatus('football-jerseys', 'fc-barcelona');
+            }
+        }, 1000);
+    });
+  </script>
+  <script src="scripts/main.js"></script>
+</body>
+</html>

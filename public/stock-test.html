@@ -1,0 +1,235 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Stock Test - Papa's Fashion</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            max-width: 600px;
+            margin: 0 auto;
+            padding: 20px;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            min-height: 100vh;
+        }
+        .section {
+            background: rgba(255, 255, 255, 0.1);
+            padding: 20px;
+            border-radius: 10px;
+            margin: 20px 0;
+            backdrop-filter: blur(10px);
+        }
+        .alert {
+            padding: 15px;
+            border-radius: 8px;
+            margin: 10px 0;
+            border-left: 4px solid;
+        }
+        .alert-danger {
+            background: rgba(220, 53, 69, 0.3);
+            border-left-color: #dc3545;
+        }
+        .alert-warning {
+            background: rgba(255, 193, 7, 0.3);
+            border-left-color: #ffc107;
+        }
+        .alert-success {
+            background: rgba(40, 167, 69, 0.3);
+            border-left-color: #28a745;
+        }
+        button {
+            background: #007bff;
+            color: white;
+            border: none;
+            padding: 10px 20px;
+            border-radius: 5px;
+            cursor: pointer;
+            margin: 5px;
+        }
+        button:hover {
+            background: #0056b3;
+        }
+        pre {
+            background: rgba(0,0,0,0.3);
+            padding: 15px;
+            border-radius: 5px;
+            font-size: 12px;
+            white-space: pre-wrap;
+            word-wrap: break-word;
+        }
+    </style>
+</head>
+<body>
+    <div class="section">
+        <h1>📦 Stock Test Page</h1>
+        <p>Testing stock management system for Papa's Fashion</p>
+        
+        <button onclick="testLoad()">Test Load Stock Config</button>
+        <button onclick="testStockManager()">Test Stock Manager</button>
+        <button onclick="forceAlerts()">Force Check Alerts</button>
+        
+        <div id="results"></div>
+    </div>
+
+    <script>
+        // Simple inline test without external dependencies
+        async function testLoad() {
+            const resultsDiv = document.getElementById('results');
+            resultsDiv.innerHTML = '<div class="alert alert-success">Testing direct stock-config.json load...</div>';
+            
+            try {
+                const response = await fetch('./stock-config.json');
+                if (!response.ok) {
+                    throw new Error(`HTTP ${response.status}: ${response.statusText}`);
+                }
+                
+                const config = await response.json();
+                
+                // Check the specific values we set
+                const blackGraphite = config.products['asics-gel-nyc']['black-graphite-grey'];
+                const eu42 = blackGraphite.sizes['EU 42'].stock;
+                const eu45 = blackGraphite.sizes['EU 45'].stock;
+                
+                resultsDiv.innerHTML = `
+                    <div class="alert alert-success">✅ Stock config loaded successfully!</div>
+                    <pre>EU 42 Black Graphite Grey: ${eu42} items
+EU 45 Black Graphite Grey: ${eu45} items
+Low stock threshold: ${config.settings.lowStockThreshold}
+
+${eu42 <= config.settings.lowStockThreshold ? '⚠️ EU 42 should trigger LOW STOCK alert' : ''}
+${eu45 === 0 ? '❌ EU 45 should trigger OUT OF STOCK alert' : ''}</pre>
+                `;
+                
+            } catch (error) {
+                resultsDiv.innerHTML = `<div class="alert alert-danger">❌ Error loading stock config: ${error.message}</div>`;
+            }
+        }
+        
+        async function testStockManager() {
+            const resultsDiv = document.getElementById('results');
+            resultsDiv.innerHTML = '<div class="alert alert-success">Testing stock manager...</div>';
+            
+            try {
+                // Load the script dynamically
+                const script = document.createElement('script');
+                script.src = './scripts/update-stock.js';
+                script.onload = async function() {
+                    try {
+                        const stockManager = new StockManager();
+                        
+                        // Wait for it to load
+                        await new Promise(resolve => {
+                            const checkInterval = setInterval(() => {
+                                if (stockManager.stockConfig) {
+                                    clearInterval(checkInterval);
+                                    resolve();
+                                }
+                            }, 100);
+                        });
+                        
+                        // Test specific functions
+                        const eu42Stock = stockManager.getStockLevel('asics-gel-nyc', 'black-graphite-grey', 'EU 42');
+                        const eu45Stock = stockManager.getStockLevel('asics-gel-nyc', 'black-graphite-grey', 'EU 45');
+                        const eu42InStock = stockManager.isInStock('asics-gel-nyc', 'black-graphite-grey', 'EU 42');
+                        const eu45InStock = stockManager.isInStock('asics-gel-nyc', 'black-graphite-grey', 'EU 45');
+                        
+                        // Force alert check
+                        stockManager.checkLowStockAlerts();
+                        const alerts = stockManager.stockConfig.alerts;
+                        
+                        resultsDiv.innerHTML = `
+                            <div class="alert alert-success">✅ Stock Manager working!</div>
+                            <pre>Stock Levels:
+EU 42: ${eu42Stock} items (in stock: ${eu42InStock})
+EU 45: ${eu45Stock} items (in stock: ${eu45InStock})
+
+Alerts Found:
+Low stock alerts: ${alerts.lowStock.length}
+Out of stock alerts: ${alerts.outOfStock.length}
+
+Alert Details:
+${alerts.outOfStock.map(item => `❌ ${item.product} (${item.size})`).join('\n')}
+${alerts.lowStock.map(item => `⚠️ ${item.product} (${item.size}) - ${item.stock} left`).join('\n')}</pre>
+                        `;
+                        
+                    } catch (error) {
+                        resultsDiv.innerHTML = `<div class="alert alert-danger">❌ StockManager error: ${error.message}</div>`;
+                    }
+                };
+                script.onerror = function() {
+                    resultsDiv.innerHTML = `<div class="alert alert-danger">❌ Failed to load update-stock.js</div>`;
+                };
+                document.head.appendChild(script);
+                
+            } catch (error) {
+                resultsDiv.innerHTML = `<div class="alert alert-danger">❌ Error: ${error.message}</div>`;
+            }
+        }
+        
+        function forceAlerts() {
+            const resultsDiv = document.getElementById('results');
+            
+            // Manual alert check based on stock config
+            fetch('./stock-config.json')
+                .then(response => response.json())
+                .then(config => {
+                    const lowStockItems = [];
+                    const outOfStockItems = [];
+                    const threshold = config.settings.lowStockThreshold;
+                    
+                    Object.keys(config.products).forEach(productType => {
+                        Object.keys(config.products[productType]).forEach(variant => {
+                            const product = config.products[productType][variant];
+                            Object.keys(product.sizes).forEach(size => {
+                                const sizeStock = product.sizes[size];
+                                if (sizeStock.stock === 0) {
+                                    outOfStockItems.push({
+                                        product: product.name,
+                                        size: size,
+                                        sku: sizeStock.sku
+                                    });
+                                } else if (sizeStock.stock <= threshold) {
+                                    lowStockItems.push({
+                                        product: product.name,
+                                        size: size,
+                                        stock: sizeStock.stock,
+                                        sku: sizeStock.sku
+                                    });
+                                }
+                            });
+                        });
+                    });
+                    
+                    let html = '<div class="alert alert-success">✅ Manual alert check completed!</div>';
+                    
+                    if (outOfStockItems.length > 0) {
+                        html += '<div class="alert alert-danger"><strong>❌ Out of Stock Items:</strong><br>';
+                        outOfStockItems.forEach(item => {
+                            html += `• ${item.product} (${item.size}) - SKU: ${item.sku}<br>`;
+                        });
+                        html += '</div>';
+                    }
+                    
+                    if (lowStockItems.length > 0) {
+                        html += '<div class="alert alert-warning"><strong>⚠️ Low Stock Items:</strong><br>';
+                        lowStockItems.forEach(item => {
+                            html += `• ${item.product} (${item.size}) - ${item.stock} left<br>`;
+                        });
+                        html += '</div>';
+                    }
+                    
+                    if (lowStockItems.length === 0 && outOfStockItems.length === 0) {
+                        html += '<div class="alert alert-success">✅ No stock alerts found</div>';
+                    }
+                    
+                    resultsDiv.innerHTML = html;
+                })
+                .catch(error => {
+                    resultsDiv.innerHTML = `<div class="alert alert-danger">❌ Error: ${error.message}</div>`;
+                });
+        }
+    </script>
+</body>
+</html>

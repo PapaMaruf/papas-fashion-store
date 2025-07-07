@@ -1,0 +1,99 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Payment Debug</title>
+    <style>
+        body { font-family: Arial, sans-serif; padding: 20px; }
+        .result { margin: 20px 0; padding: 10px; border: 1px solid #ccc; }
+        .error { background-color: #ffebee; color: #c62828; }
+        .success { background-color: #e8f5e8; color: #2e7d32; }
+        button { padding: 10px 20px; margin: 10px 0; }
+    </style>
+</head>
+<body>
+    <h1>Payment API Debug</h1>
+    
+    <button onclick="testPayment()">Test Payment API</button>
+    
+    <div id="result"></div>
+    
+    <script>
+        async function testPayment() {
+            const resultDiv = document.getElementById('result');
+            resultDiv.innerHTML = '<div>Testing payment API...</div>';
+            
+            const testData = {
+                amount: 50,
+                customerInfo: {
+                    name: 'Test User',
+                    email: 'test@example.com',
+                    phone: '123456789',
+                    country: 'Belgium',
+                    address: 'Test Street 1',
+                    houseNumber: '1',
+                    postalCode: '1000',
+                    city: 'Brussels',
+                    paymentMethod: 'card'
+                },
+                cart: [
+                    {
+                        name: 'Test Product',
+                        color: 'Black',
+                        size: 'M',
+                        qty: 1,
+                        price: 49.95
+                    }
+                ]
+            };
+            
+            try {
+                console.log('Sending test payment request:', testData);
+                
+                const response = await fetch('http://localhost:3001/api/create-checkout-session', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                    },
+                    body: JSON.stringify(testData)
+                });
+                
+                console.log('Response status:', response.status);
+                console.log('Response headers:', response.headers);
+                
+                const data = await response.json();
+                console.log('Response data:', data);
+                
+                if (response.ok) {
+                    resultDiv.innerHTML = `
+                        <div class="result success">
+                            <h3>✅ Success!</h3>
+                            <p>Session URL: ${data.url}</p>
+                            <p>You can now redirect to Stripe checkout.</p>
+                        </div>
+                    `;
+                } else {
+                    resultDiv.innerHTML = `
+                        <div class="result error">
+                            <h3>❌ API Error</h3>
+                            <p><strong>Status:</strong> ${response.status}</p>
+                            <p><strong>Error:</strong> ${data.error}</p>
+                            <p><strong>Details:</strong> ${data.details || 'No details available'}</p>
+                        </div>
+                    `;
+                }
+            } catch (error) {
+                console.error('Network error:', error);
+                resultDiv.innerHTML = `
+                    <div class="result error">
+                        <h3>❌ Network Error</h3>
+                        <p><strong>Error:</strong> ${error.message}</p>
+                        <p>Make sure the backend server is running on port 3001.</p>
+                    </div>
+                `;
+            }
+        }
+    </script>
+</body>
+</html>

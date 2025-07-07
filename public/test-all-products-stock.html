@@ -1,0 +1,293 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>All Products Stock Reduction Test - Papa's Fashion</title>
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+      max-width: 800px;
+      margin: 20px auto;
+      padding: 20px;
+      background: #f5f5f5;
+    }
+    .container {
+      background: white;
+      padding: 30px;
+      border-radius: 10px;
+      box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+    }
+    .test-section {
+      margin: 30px 0;
+      padding: 20px;
+      border: 1px solid #ddd;
+      border-radius: 8px;
+      background: #fafafa;
+    }
+    .test-section h3 {
+      color: #2c3e50;
+      margin-top: 0;
+    }
+    .test-buttons {
+      display: flex;
+      gap: 10px;
+      flex-wrap: wrap;
+      margin: 15px 0;
+    }
+    .test-btn {
+      padding: 10px 15px;
+      border: none;
+      border-radius: 5px;
+      cursor: pointer;
+      font-size: 14px;
+      transition: background-color 0.3s;
+    }
+    .test-btn.asics { background: #3498db; color: white; }
+    .test-btn.ami { background: #e74c3c; color: white; }
+    .test-btn.jersey { background: #27ae60; color: white; }
+    .test-btn:hover { opacity: 0.8; }
+    .results {
+      margin: 20px 0;
+      padding: 15px;
+      background: #2c3e50;
+      color: #ecf0f1;
+      border-radius: 5px;
+      font-family: monospace;
+      font-size: 14px;
+      white-space: pre-wrap;
+      max-height: 400px;
+      overflow-y: auto;
+    }
+    .success { color: #2ecc71; }
+    .error { color: #e74c3c; }
+    .warning { color: #f39c12; }
+  </style>
+</head>
+<body>
+  <div class="container">
+    <h1>🧪 All Products Stock Reduction Test</h1>
+    <p>Test stock reduction for all product types: Asics sneakers, Ami Paris sweaters, and football jerseys.</p>
+    
+    <div class="test-section">
+      <h3>👟 Asics Gel-NYC Sneakers</h3>
+      <p>Test stock reduction for all Asics variants:</p>
+      <div class="test-buttons">
+        <button class="test-btn asics" onclick="testStockReduction('asics', 'Asics Gel-NYC Yankees', 'Yankees', '42')">
+          Yankees (42)
+        </button>
+        <button class="test-btn asics" onclick="testStockReduction('asics', 'Asics Gel-NYC Cream Arctic Sky', 'Cream Arctic Sky', '40')">
+          Cream Arctic Sky (40)
+        </button>
+        <button class="test-btn asics" onclick="testStockReduction('asics', 'Asics Gel-NYC Ivory Clay Grey', 'Ivory Clay Grey', '42')">
+          Ivory Clay Grey (42)
+        </button>
+        <button class="test-btn asics" onclick="testStockReduction('asics', 'Asics Gel-NYC Black Graphite Grey', 'Black Graphite Grey', '40')">
+          Black Graphite Grey (40)
+        </button>
+      </div>
+    </div>
+
+    <div class="test-section">
+      <h3>🧥 Ami Paris Sweaters</h3>
+      <p>Test stock reduction for Ami Paris variants:</p>
+      <div class="test-buttons">
+        <button class="test-btn ami" onclick="testStockReduction('ami', 'Ami Paris Sweater Black', 'Black', 'L')">
+          Black (L)
+        </button>
+        <button class="test-btn ami" onclick="testStockReduction('ami', 'Ami Paris Sweater White', 'White', 'M')">
+          White (M)
+        </button>
+      </div>
+    </div>
+
+    <div class="test-section">
+      <h3>⚽ Football Jerseys</h3>
+      <p>Test stock reduction for football jerseys:</p>
+      <div class="test-buttons">
+        <button class="test-btn jersey" onclick="testStockReduction('jersey', 'FC Barcelona Limited Edition Barcelona City', 'Barcelona City', 'M')">
+          FC Barcelona (M)
+        </button>
+        <button class="test-btn jersey" onclick="testStockReduction('jersey', 'Real Madrid Limited Edition Red Dragon', 'Red Dragon', 'L')">
+          Real Madrid (L)
+        </button>
+        <button class="test-btn jersey" onclick="testStockReduction('jersey', 'Portugal Limited Edition LV', 'LV', 'M')">
+          Portugal (M)
+        </button>
+      </div>
+    </div>
+
+    <div class="test-section">
+      <h3>🔄 Utility Actions</h3>
+      <div class="test-buttons">
+        <button class="test-btn" style="background: #95a5a6; color: white;" onclick="checkCurrentStock()">
+          Check Current Stock
+        </button>
+        <button class="test-btn" style="background: #34495e; color: white;" onclick="clearResults()">
+          Clear Results
+        </button>
+      </div>
+    </div>
+
+    <div class="results" id="results">
+Ready to test stock reduction for all products...
+Click any button above to start testing.
+    </div>
+  </div>
+
+  <script>
+    const resultsDiv = document.getElementById('results');
+    
+    function log(message, type = 'info') {
+      const timestamp = new Date().toLocaleTimeString();
+      const className = type === 'success' ? 'success' : type === 'error' ? 'error' : type === 'warning' ? 'warning' : '';
+      const prefix = type === 'success' ? '✅' : type === 'error' ? '❌' : type === 'warning' ? '⚠️' : 'ℹ️';
+      resultsDiv.innerHTML += `<span class="${className}">[${timestamp}] ${prefix} ${message}</span>\n`;
+      resultsDiv.scrollTop = resultsDiv.scrollHeight;
+    }
+    
+    async function testStockReduction(category, name, color, size) {
+      log(`Testing ${category}: ${name} (${color}, ${size})`, 'info');
+      
+      // First, check current stock
+      try {
+        const stockResponse = await fetch('http://localhost:3001/api/stock-status');
+        const stockData = await stockResponse.json();
+        
+        // Find the current stock for this item
+        let currentStock = 'Unknown';
+        if (category === 'asics' && stockData.products && stockData.products['asics-gel-nyc']) {
+          const variants = stockData.products['asics-gel-nyc'];
+          for (const [variantKey, variantData] of Object.entries(variants)) {
+            if (variantData.name === name && variantData.sizes[size]) {
+              currentStock = variantData.sizes[size].stock;
+              break;
+            }
+          }
+        } else if (category === 'ami' && stockData.products && stockData.products['ami-paris']) {
+          const variants = stockData.products['ami-paris'];
+          for (const [variantKey, variantData] of Object.entries(variants)) {
+            if (variantData.name === name && variantData.sizes[size]) {
+              currentStock = variantData.sizes[size].stock;
+              break;
+            }
+          }
+        } else if (category === 'jersey' && stockData.products && stockData.products['football-jerseys']) {
+          const variants = stockData.products['football-jerseys'];
+          for (const [variantKey, variantData] of Object.entries(variants)) {
+            if (variantData.name === name && variantData.sizes[size]) {
+              currentStock = variantData.sizes[size].stock;
+              break;
+            }
+          }
+        }
+        
+        log(`Current stock before reduction: ${currentStock}`, 'info');
+        
+        if (currentStock === 0) {
+          log(`⚠️ Item is out of stock, cannot test reduction`, 'warning');
+          return;
+        }
+        
+        // Create a test cart item
+        const testCart = [{
+          name: name,
+          color: color,
+          size: size,
+          qty: 1
+        }];
+        
+        // Send stock reduction request
+        const response = await fetch('http://localhost:3001/api/reduce-stock', {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/json',
+          },
+          body: JSON.stringify({ items: testCart })
+        });
+        
+        if (response.ok) {
+          const result = await response.json();
+          log(`Stock reduction response: ${JSON.stringify(result, null, 2)}`, 'success');
+          
+          // Check if reduction was successful
+          if (result.success && result.reductions && result.reductions.length > 0) {
+            const reduction = result.reductions[0];
+            if (reduction.success) {
+              log(`✅ SUCCESS: Stock reduced from ${reduction.oldStock} to ${reduction.newStock}`, 'success');
+            } else {
+              log(`❌ FAILED: ${reduction.error || 'Unknown error'}`, 'error');
+            }
+          } else {
+            log(`❌ FAILED: No reduction data in response`, 'error');
+          }
+        } else {
+          const errorText = await response.text();
+          log(`❌ HTTP Error: ${response.status} - ${errorText}`, 'error');
+        }
+      } catch (error) {
+        log(`❌ Error: ${error.message}`, 'error');
+      }
+      
+      log('---', 'info');
+    }
+    
+    async function checkCurrentStock() {
+      log('Checking current stock levels...', 'info');
+      
+      try {
+        const response = await fetch('http://localhost:3001/api/stock-status');
+        if (response.ok) {
+          const stockData = await response.json();
+          
+          // Display key stock information
+          log('📊 Current Stock Summary:', 'info');
+          
+          // Asics
+          if (stockData.products && stockData.products['asics-gel-nyc']) {
+            log('👟 Asics Gel-NYC:', 'info');
+            Object.entries(stockData.products['asics-gel-nyc']).forEach(([variant, data]) => {
+              const totalStock = Object.values(data.sizes).reduce((sum, size) => sum + size.stock, 0);
+              log(`  ${data.name}: ${totalStock} total units`, 'info');
+            });
+          }
+          
+          // Ami Paris
+          if (stockData.products && stockData.products['ami-paris']) {
+            log('🧥 Ami Paris:', 'info');
+            Object.entries(stockData.products['ami-paris']).forEach(([variant, data]) => {
+              const totalStock = Object.values(data.sizes).reduce((sum, size) => sum + size.stock, 0);
+              log(`  ${data.name}: ${totalStock} total units`, 'info');
+            });
+          }
+          
+          // Football Jerseys
+          if (stockData.products && stockData.products['football-jerseys']) {
+            log('⚽ Football Jerseys:', 'info');
+            Object.entries(stockData.products['football-jerseys']).forEach(([variant, data]) => {
+              const totalStock = Object.values(data.sizes).reduce((sum, size) => sum + size.stock, 0);
+              log(`  ${data.name}: ${totalStock} total units`, 'info');
+            });
+          }
+          
+        } else {
+          log(`❌ Failed to fetch stock: ${response.status}`, 'error');
+        }
+      } catch (error) {
+        log(`❌ Error checking stock: ${error.message}`, 'error');
+      }
+      
+      log('---', 'info');
+    }
+    
+    function clearResults() {
+      resultsDiv.innerHTML = 'Results cleared. Ready for new tests...\n';
+    }
+    
+    // Auto-check stock on page load
+    window.addEventListener('load', () => {
+      setTimeout(checkCurrentStock, 1000);
+    });
+  </script>
+</body>
+</html>

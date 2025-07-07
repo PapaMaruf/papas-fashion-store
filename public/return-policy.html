@@ -1,0 +1,375 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Return Policy - Papa's Fashion</title>
+  <link rel="stylesheet" href="styles/main.css">
+  <link href="https://fonts.googleapis.com/css2?family=Bebas+Neue&display=swap" rel="stylesheet">
+  <style>
+    .policy-container {
+      max-width: 800px;
+      margin: 2rem auto;
+      padding: 2rem;
+      background: #fff;
+      border-radius: 16px;
+      box-shadow: 0 4px 20px rgba(0,0,0,0.08);
+      line-height: 1.7;
+    }
+    .policy-header {
+      text-align: center;
+      margin-bottom: 3rem;
+    }
+    .policy-title {
+      font-family: 'Bebas Neue', sans-serif;
+      font-size: 3rem;
+      color: #2c3e50;
+      margin-bottom: 1rem;
+      letter-spacing: 2px;
+    }
+    .policy-subtitle {
+      font-size: 1.2rem;
+      color: #7f8c8d;
+      max-width: 600px;
+      margin: 0 auto;
+    }
+    .policy-section {
+      margin: 2.5rem 0;
+      padding: 2rem;
+      background: #f8f9fa;
+      border-radius: 12px;
+      border-left: 5px solid #3498db;
+    }
+    .section-title {
+      display: flex;
+      align-items: center;
+      gap: 0.5rem;
+      font-size: 1.5rem;
+      font-weight: 700;
+      color: #2c3e50;
+      margin-bottom: 1.5rem;
+    }
+    .section-content {
+      color: #34495e;
+      font-size: 1rem;
+    }
+    .conditions-list {
+      list-style: none;
+      padding: 0;
+      margin: 1rem 0;
+    }
+    .conditions-list li {
+      padding: 0.8rem 0;
+      border-bottom: 1px solid #ecf0f1;
+      position: relative;
+      padding-left: 2rem;
+    }
+    .conditions-list li:before {
+      content: "✓";
+      position: absolute;
+      left: 0;
+      color: #27ae60;
+      font-weight: bold;
+      font-size: 1.2rem;
+    }
+    .conditions-list li:last-child {
+      border-bottom: none;
+    }
+    .highlight-box {
+      background: #e8f4fd;
+      border: 2px solid #3498db;
+      border-radius: 8px;
+      padding: 1.5rem;
+      margin: 1.5rem 0;
+      text-align: center;
+    }
+    .highlight-box strong {
+      color: #2980b9;
+      font-size: 1.1rem;
+    }
+    .contact-info {
+      background: #2c3e50;
+      color: white;
+      padding: 2rem;
+      border-radius: 12px;
+      text-align: center;
+      margin: 2rem 0;
+    }
+    .contact-info h3 {
+      margin-top: 0;
+      font-size: 1.5rem;
+      margin-bottom: 1rem;
+    }
+    .email-link {
+      color: #3498db;
+      text-decoration: none;
+      font-weight: bold;
+      font-size: 1.1rem;
+    }
+    .email-link:hover {
+      text-decoration: underline;
+    }
+    .back-button {
+      display: inline-flex;
+      align-items: center;
+      gap: 0.5rem;
+      padding: 1rem 2rem;
+      background: linear-gradient(135deg, #3498db, #2980b9);
+      color: white;
+      text-decoration: none;
+      border-radius: 8px;
+      font-weight: 600;
+      transition: all 0.3s ease;
+      margin: 2rem auto;
+      display: flex;
+      justify-content: center;
+      max-width: 200px;
+    }
+    .back-button:hover {
+      transform: translateY(-2px);
+      box-shadow: 0 4px 12px rgba(52, 152, 219, 0.3);
+    }
+    .warning-box {
+      background: #fdf2e9;
+      border: 2px solid #e67e22;
+      border-radius: 8px;
+      padding: 1.5rem;
+      margin: 1.5rem 0;
+    }
+    .warning-box strong {
+      color: #d35400;
+    }
+    
+    /* Enhanced Footer Styling */
+    footer {
+      background: linear-gradient(135deg, #1e293b 0%, #334155 100%);
+      color: #e2e8f0;
+      padding: 3rem 0 1rem;
+      margin-top: 4rem;
+      border-top: 1px solid #334155;
+    }
+    
+    .footer-content {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+      gap: 2rem;
+      max-width: 1200px;
+      margin: 0 auto;
+      padding: 0 2rem;
+    }
+    
+    .footer-section h3 {
+      font-family: 'Bebas Neue', sans-serif;
+      font-size: 1.8rem;
+      margin-bottom: 1rem;
+      color: #3498db;
+      letter-spacing: 1px;
+    }
+    
+    .footer-section h4 {
+      font-size: 1.2rem;
+      margin-bottom: 1rem;
+      color: #bdc3c7;
+      font-weight: 600;
+    }
+    
+    .footer-section p {
+      color: #95a5a6;
+      line-height: 1.6;
+      margin-bottom: 0.5rem;
+    }
+    
+    .footer-section ul {
+      list-style: none;
+      padding: 0;
+    }
+    
+    .footer-section ul li {
+      margin-bottom: 0.5rem;
+    }
+    
+    .footer-section ul li a {
+      color: #bdc3c7;
+      text-decoration: none;
+      transition: color 0.3s ease;
+    }
+    
+    .footer-section ul li a:hover {
+      color: #3498db;
+    }
+    
+    .social-links {
+      display: flex;
+      flex-direction: column;
+      gap: 0.5rem;
+    }
+    
+    .social-links a {
+      color: #bdc3c7;
+      text-decoration: none;
+      transition: color 0.3s ease;
+      cursor: pointer;
+    }
+    
+    .social-links a:hover {
+      color: #3498db;
+    }
+    
+    .footer-bottom {
+      text-align: center;
+      padding-top: 2rem;
+      margin-top: 2rem;
+      border-top: 1px solid #334155;
+      color: #95a5a6;
+    }
+    
+    @media (max-width: 768px) {
+      .footer-content {
+        grid-template-columns: 1fr;
+        text-align: center;
+      }
+      
+      .social-links {
+        flex-direction: row;
+        justify-content: center;
+      }
+    }
+  </style>
+</head>
+<body>
+  <header>
+    <!-- Hamburger menu button -->
+    <button id="menu-btn" class="menu-btn" aria-label="Open navigation">
+      <span></span>
+      <span></span>
+      <span></span>
+    </button>
+    <div class="header-brand">
+      <span>PAPA'S FASHION</span>
+      <img src="images/papasfashionlogo.png" alt="Papa's Fashion Logo" class="brand-logo" />
+    </div>
+    <div class="header-actions">
+      <button class="contact-btn" onclick="window.location.href='contact.html'">
+        <i class="fas fa-envelope"></i> <span>Contact Us</span>
+      </button>
+    </div>
+  </header>
+
+  <nav id="side-nav" class="side-nav">
+    <ul>
+      <li><a href="index.html#home" id="nav-home">🏠 Home</a></li>
+      <li><a href="index.html#sneakers" id="nav-sneakers">👟 Sneakers</a></li>
+      <li><a href="index.html#sweaters" id="nav-sweaters">🧥 Sweaters</a></li>
+      <li><a href="index.html#jerseys" id="nav-jerseys">⚽ Football Jerseys</a></li>
+      <li><a href="contact.html" id="nav-contact">📧 Contact</a></li>
+    </ul>
+  </nav>
+
+  <main>
+    <div class="policy-container">
+      <div class="policy-header">
+        <h1 class="policy-title">Return Policy</h1>
+        <p class="policy-subtitle">
+          At Papa's Fashion, we want you to be fully satisfied with your purchase. 
+          If you are not happy with your order, you have the right to return it within 14 days of the purchase date.
+        </p>
+      </div>
+
+      <div class="policy-section">
+        <h2 class="section-title">
+          🔄 Return Conditions
+        </h2>
+        <div class="section-content">
+          <p>To be eligible for a return, the following conditions must be met:</p>
+          <ul class="conditions-list">
+            <li>The return request must be made within 14 days of the purchase date.</li>
+            <li>The item must be returned in its original packaging, unworn, unused, and in the same condition as received.</li>
+            <li>You must provide a clear reason for the return.</li>
+            <li>A proof of purchase (order confirmation or invoice) is required.</li>
+          </ul>
+          <div class="warning-box">
+            <strong>Important:</strong> Returns that do not meet these conditions will not be accepted. No exceptions.
+          </div>
+        </div>
+      </div>
+
+      <div class="policy-section">
+        <h2 class="section-title">
+          📨 How to Initiate a Return
+        </h2>
+        <div class="section-content">
+          <ol style="padding-left: 1.5rem; color: #34495e;">
+            <li style="margin-bottom: 1rem;">
+              <strong>Contact us within 14 days</strong> of your purchase at 
+              <a href="mailto:info.papasfashion@gmail.com" class="email-link">info.papasfashion@gmail.com</a> 
+              and state your order number and reason for return.
+            </li>
+            <li style="margin-bottom: 1rem;">
+              <strong>Receive instructions:</strong> You will receive further instructions on how to send the product back.
+            </li>
+            <li style="margin-bottom: 1rem;">
+              <strong>Refund processing:</strong> Once we have received and inspected the item, we will refund the product price within 5 business days using your original payment method.
+            </li>
+          </ol>
+        </div>
+      </div>
+
+      <div class="policy-section">
+        <h2 class="section-title">
+          🚚 Return Shipping Costs
+        </h2>
+        <div class="section-content">
+          <p>Return shipping costs are the customer's responsibility, unless the product was delivered damaged or incorrect.</p>
+          <div class="highlight-box">
+            <strong>Note:</strong> We recommend using a tracked shipping service to ensure your return reaches us safely.
+          </div>
+        </div>
+      </div>
+
+      <div class="contact-info">
+        <h3>Need Help with Your Return?</h3>
+        <p>Contact our customer service team</p>
+        <p>
+          Email: <a href="mailto:info.papasfashion@gmail.com" class="email-link">info.papasfashion@gmail.com</a>
+        </p>
+        <p style="margin-top: 1rem; font-size: 0.9rem; opacity: 0.8;">
+          We typically respond within 24 hours during business days.
+        </p>
+      </div>
+
+      <a href="index.html" class="back-button">
+        ← Back to Shop
+      </a>
+    </div>
+  </main>
+
+  <footer>
+    <div class="footer-content">
+      <div class="footer-section">
+        <h3>Papa's Fashion</h3>
+        <p>Premium fashion for the modern lifestyle</p>
+      </div>
+      <div class="footer-section">
+        <h4>Quick Links</h4>
+        <ul>
+          <li><a href="index.html">Home</a></li>
+          <li><a href="return-policy.html">Return Policy</a></li>
+          <li><a href="contact.html">Contact Us</a></li>
+        </ul>
+      </div>        <div class="footer-section">
+          <h4>Follow Us</h4>
+          <div class="social-links">
+            <a href="https://instagram.com/papasfashion9k" target="_blank">📱 Instagram</a>
+            <a href="https://snapchat.com/add/papasfashion9k" target="_blank">👻 Snapchat</a>
+            <a href="https://tiktok.com/@papasfashion9k" target="_blank">🎵 TikTok</a>
+          </div>
+        </div>
+    </div>
+    <div class="footer-bottom">
+      <p>&copy; 2025 Papa's Fashion. All rights reserved.</p>
+    </div>
+  </footer>
+
+  <script src="scripts/main.js"></script>
+</body>
+</html>

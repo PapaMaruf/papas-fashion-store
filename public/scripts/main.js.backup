@@ -1,0 +1,833 @@
+// filepath: src/scripts/main.js
+
+// Helper function to get the correct backend URL
+function getBackendUrl() {
+    const hostname = window.location.hostname;
+    if (hostname === 'localhost' || hostname === '127.0.0.1') {
+        return 'http://localhost:3001';
+    } else {
+        // Use the same IP as the current page but with port 3001
+        return `http://${hostname}:3001`;
+    }
+}
+
+// Test backend connection
+async function testBackendConnection() {
+    try {
+        const backendUrl = getBackendUrl();
+        console.log('Testing backend connection to:', backendUrl);
+        const response = await fetch(`${backendUrl}/test`, {
+            method: 'GET',
+            headers: { 'Content-Type': 'application/json' }
+        });
+        if (response.ok) {
+            const data = await response.text();
+            console.log('Backend connection successful:', data);
+            return true;
+        } else {
+            console.error('Backend responded with error:', response.status);
+            return false;
+        }
+    } catch (error) {
+        console.error('Backend connection failed:', error);
+        return false;
+    }
+}
+
+// Show user-friendly message when backend is unavailable
+function showBackendUnavailableMessage() {
+    // Check if modal already exists to prevent duplicates
+    if (document.getElementById('backend-unavailable-overlay')) {
+        return;
+    }
+    
+    // Create a modal-style overlay
+    const overlay = document.createElement('div');
+    overlay.id = 'backend-unavailable-overlay';
+    overlay.style.cssText = `
+        position: fixed;
+        top: 0;
+        left: 0;
+        width: 100%;
+        height: 100%;
+        background: rgba(0, 0, 0, 0.8);
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        z-index: 10000;
+        font-family: 'Poppins', sans-serif;
+    `;
+
+    const modal = document.createElement('div');
+    modal.style.cssText = `
+        background: white;
+        padding: 40px;
+        border-radius: 15px;
+        max-width: 500px;
+        width: 90%;
+        text-align: center;
+        box-shadow: 0 10px 30px rgba(0, 0, 0, 0.3);
+        animation: fadeIn 0.3s ease-out;
+    `;
+
+    modal.innerHTML = `
+        <h2 style="color: #333; margin-bottom: 20px; font-size: 24px;">
+            🚫 Payment System Unavailable
+        </h2>
+        <p style="color: #666; line-height: 1.6; margin-bottom: 30px; font-size: 16px;">
+            Sorry, our payment system is currently unavailable. This usually happens when the server needs to be restarted.
+        </p>
+        <div style="background: #f8f9fa; padding: 20px; border-radius: 10px; margin-bottom: 30px;">
+            <p style="color: #333; font-weight: 600; margin-bottom: 10px;">To fix this issue:</p>
+            <ol style="color: #666; text-align: left; line-height: 1.8; margin: 0; padding-left: 20px;">
+                <li>Open VS Code</li>
+                <li>Press <strong>Ctrl+Shift+P</strong></li>
+                <li>Type "Tasks: Run Task"</li>
+                <li>Select "Start Backend Server"</li>
+                <li>Wait for "Server listening on port 3001" message</li>
+            </ol>
+        </div>
+        <div style="display: flex; gap: 15px; justify-content: center; flex-wrap: wrap;">
+            <button onclick="closeBackendUnavailableMessage()" style="
+                background: linear-gradient(45deg, #667eea, #764ba2);
+                color: white;
+                border: none;
+                padding: 12px 24px;
+                border-radius: 25px;
+                cursor: pointer;
+                font-weight: 600;
+                transition: all 0.3s ease;
+                font-size: 14px;
+            ">
+                Close
+            </button>
+            <button onclick="window.location.href='contact.html'" style="
+                background: #28a745;
+                color: white;
+                border: none;
+                padding: 12px 24px;
+                border-radius: 25px;
+                cursor: pointer;
+                font-weight: 600;
+                transition: all 0.3s ease;
+                font-size: 14px;
+            ">
+                Contact Us
+            </button>
+        </div>
+    `;
+
+    overlay.appendChild(modal);
+    document.body.appendChild(overlay);
+
+    // Add CSS animation
+    const style = document.createElement('style');
+    style.textContent = `
+        @keyframes fadeIn {
+            from { opacity: 0; transform: scale(0.9); }
+            to { opacity: 1; transform: scale(1); }
+        }
+    `;
+    document.head.appendChild(style);
+
+    // Close on overlay click
+    overlay.addEventListener('click', function(e) {
+        if (e.target === overlay) {
+            closeBackendUnavailableMessage();
+        }
+    });
+    
+    // Close on Escape key
+    document.addEventListener('keydown', function(e) {
+        if (e.key === 'Escape') {
+            closeBackendUnavailableMessage();
+        }
+    });
+}
+                cursor: pointer;
+                font-weight: 600;
+                transition: all 0.3s ease;
+            ">
+                Contact Us
+            </button>
+        </div>
+    `;
+
+    overlay.appendChild(modal);
+    document.body.appendChild(overlay);
+
+    // Close on overlay click
+    overlay.addEventListener('click', function(e) {
+        if (e.target === overlay) {
+            closeBackendUnavailableMessage();
+        }
+    });
+}
+
+// Close the backend unavailable message
+function closeBackendUnavailableMessage() {
+    const overlay = document.getElementById('backend-unavailable-overlay');
+    if (overlay) {
+        overlay.style.opacity = '0';
+        overlay.style.transition = 'opacity 0.3s ease';
+        setTimeout(() => {
+            overlay.remove();
+        }, 300);
+    }
+}
+
+// Show subtle notification when backend is unavailable on page load
+function showBackendStatusNotification() {
+    const notification = document.createElement('div');
+    notification.id = 'backend-status-notification';
+    notification.style.cssText = `
+        position: fixed;
+        top: 20px;
+        right: 20px;
+        background: #ff6b6b;
+        color: white;
+        padding: 15px 20px;
+        border-radius: 8px;
+        font-family: 'Poppins', sans-serif;
+        font-size: 14px;
+        z-index: 1000;
+        box-shadow: 0 4px 12px rgba(0, 0, 0, 0.2);
+        max-width: 300px;
+        cursor: pointer;
+        transition: all 0.3s ease;
+    `;
+
+    notification.innerHTML = `
+        <div style="display: flex; align-items: center; gap: 10px;">
+            <span style="font-size: 18px;">⚠️</span>
+            <div>
+                <div style="font-weight: 600; margin-bottom: 5px;">Payment System Offline</div>
+                <div style="font-size: 12px; opacity: 0.9;">Checkout may not work. Click to dismiss.</div>
+            </div>
+        </div>
+    `;
+
+    document.body.appendChild(notification);
+
+    // Auto-dismiss after 8 seconds
+    setTimeout(() => {
+        if (notification && notification.parentNode) {
+            notification.style.opacity = '0';
+            setTimeout(() => {
+                if (notification && notification.parentNode) {
+                    notification.remove();
+                }
+            }, 300);
+        }
+    }, 8000);
+
+    // Click to dismiss
+    notification.addEventListener('click', function() {
+        notification.style.opacity = '0';
+        setTimeout(() => {
+            if (notification && notification.parentNode) {
+                notification.remove();
+            }
+        }, 300);
+    });
+}
+
+// Mobile device detection and error handling
+function isMobileDevice() {
+    return /Android|webOS|iPhone|iPad|iPod|BlackBerry|IEMobile|Opera Mini/i.test(navigator.userAgent) || window.innerWidth < 768;
+}
+
+// Enhanced error handling for mobile
+function handleMobileError(error, context) {
+    console.error(`Mobile error in ${context}:`, error);
+    
+    // Prevent white page by ensuring minimum content is visible
+    if (document.body.children.length === 0) {
+        document.body.innerHTML = `
+            <div style="padding: 20px; text-align: center; font-family: Arial, sans-serif;">
+                <h2>Loading...</h2>
+                <p>If this persists, please refresh the page.</p>
+                <button onclick="window.location.reload()" style="padding: 10px 20px; background: #667eea; color: white; border: none; border-radius: 5px;">
+                    Refresh Page
+                </button>
+            </div>
+        `;
+    }
+}
+
+// Wrap critical functions in try-catch for mobile
+function safeExecute(fn, context) {
+    try {
+        return fn();
+    } catch (error) {
+        handleMobileError(error, context);
+        return null;
+    }
+}
+
+document.addEventListener('DOMContentLoaded', function() {
+    // Test backend connection on page load and show notification if unavailable
+    testBackendConnection().then(isConnected => {
+        if (!isConnected) {
+            showBackendStatusNotification();
+        }
+    });
+    
+    safeExecute(() => {
+        const menuBtn = document.getElementById('menu-btn');
+        const sideNav = document.getElementById('side-nav');
+        const pageTitle = document.getElementById('page-title');
+        const navLinks = {
+            home: document.getElementById('nav-home'),
+            sneakers: document.getElementById('nav-sneakers'),
+            sweaters: document.getElementById('nav-sweaters'),
+            jerseys: document.getElementById('nav-jerseys'),
+            beanies: document.getElementById('nav-beanies'),
+            cart: document.getElementById('nav-cart')
+        };
+        const sections = {
+            home: document.getElementById('home'),
+            sneakers: document.getElementById('sneakers'),
+            sweaters: document.getElementById('sweaters'),
+            jerseys: document.getElementById('jerseys'),
+            beanies: document.getElementById('beanies')
+        };
+        const titles = {
+            home: 'HOME',
+            sneakers: 'SNEAKERS',
+            sweaters: 'SWEATERS',
+            jerseys: 'FOOTBALL JERSEYS',
+            beanies: 'BEANIES'
+        };
+
+        menuBtn.addEventListener('click', function() {
+            sideNav.classList.toggle('open');
+            highlightCurrentSection();
+        });
+
+        sideNav.querySelectorAll('a').forEach(link => {
+            link.addEventListener('click', () => {
+                sideNav.classList.remove('open');
+            });
+        });
+
+        // Use event delegation to handle cart link clicks (including dynamically added ones)
+        sideNav.addEventListener('click', function(e) {
+            if (e.target.closest('#nav-cart')) {
+                sideNav.classList.remove('open');
+            }
+        });
+
+        // On DOMContentLoaded, forcibly hide all sections except the current one (even if CSS or other JS interferes)
+        function showSection(sectionKey) {
+            Object.keys(sections).forEach(key => {
+                if (sections[key]) {
+                    sections[key].style.setProperty('display', key === sectionKey ? 'block' : 'none', 'important');
+                }
+            });
+        }
+
+        function highlightCurrentSection() {
+            let hash = window.location.hash || '#home';
+            Object.values(navLinks).forEach(link => link.classList.remove('active'));
+            let key = hash.replace('#', '');
+            if (navLinks[key]) {
+                navLinks[key].classList.add('active');
+                showSection(key);
+                if (pageTitle && titles[key]) {
+                    pageTitle.textContent = titles[key];
+                }
+            } else {
+                navLinks['home'].classList.add('active');
+                showSection('home');
+                if (pageTitle) {
+                    pageTitle.textContent = titles['home'];
+                }
+            }
+        }
+
+        // Product image swap for all sweater products with outline and transition
+        document.querySelectorAll('#sweaters .product').forEach(product => {
+            const mainImg = product.querySelector('.main-product-img');
+            const thumbImgs = product.querySelectorAll('.thumb-img');
+            if (!mainImg || thumbImgs.length === 0) return;
+            mainImg.style.transition = 'opacity 0.3s';
+            function updateThumbOutline() {
+                thumbImgs.forEach(img => {
+                    if (img.src === mainImg.src) {
+                        img.style.outline = '2px solid #000';
+                        img.style.outlineOffset = '2px';
+                    } else {
+                        img.style.outline = 'none';
+                    }
+                });
+            }
+            thumbImgs.forEach(img => {
+                img.style.cursor = 'pointer';
+                img.addEventListener('click', function() {
+                    if (mainImg.src === this.src) return; // Prevent fade if already selected
+                    mainImg.style.opacity = '0';
+                    setTimeout(() => {
+                        mainImg.src = this.src;
+                        mainImg.style.opacity = '1';
+                        updateThumbOutline();
+                    }, 300);
+                });
+            });
+            updateThumbOutline();
+        });
+
+        // Ensure product image swap logic works for all products on the grid page
+        function setupGridThumbnailLogic() {
+            document.querySelectorAll('#sneakers .product').forEach(product => {
+                const mainImg = product.querySelector('.main-product-img');
+                const thumbImgs = product.querySelectorAll('.thumb-img');
+                if (!mainImg || thumbImgs.length === 0) return;
+
+                mainImg.style.transition = 'opacity 0.3s';
+
+                function updateThumbOutline() {
+                    thumbImgs.forEach(img => {
+                        img.style.border = '2px solid transparent';
+                    });
+                    const selectedThumb = Array.from(thumbImgs).find(img => img.src === mainImg.src);
+                    if (selectedThumb) {
+                        selectedThumb.style.border = '2px solid #000';
+                    }
+                }
+
+                thumbImgs.forEach(img => {
+                    img.style.cursor = 'pointer';
+                    // Remove any existing onclick handlers
+                    img.removeAttribute('onclick');
+                    img.addEventListener('click', function() {
+                        if (mainImg.src === this.src) return; // Prevent fade if already selected
+                        mainImg.style.opacity = '0';
+                        setTimeout(() => {
+                            mainImg.src = this.src;
+                            mainImg.style.opacity = '1';
+                            updateThumbOutline();
+                        }, 300);
+                    });
+                });
+
+                updateThumbOutline();
+            });
+        }
+
+        // --- SHOPPING CART LOGIC ---
+        const cartSection = document.getElementById('cart');
+        const cartItemsDiv = document.getElementById('cart-items');
+        const cartEmptyDiv = document.getElementById('cart-empty');
+        let cart = JSON.parse(localStorage.getItem('cart') || '[]');
+
+        function showCartSection() {
+            Object.keys(sections).forEach(key => {
+                if (sections[key]) sections[key].style.setProperty('display', 'none', 'important');
+            });
+            if (cartSection) cartSection.style.setProperty('display', 'block', 'important');
+            if (pageTitle) pageTitle.textContent = 'SHOPPING CART';
+        }
+
+        function updateCartDisplay() {
+            if (!cartItemsDiv || !cartEmptyDiv) return;
+            cartItemsDiv.innerHTML = '';
+            const cartSummary = document.getElementById('cart-summary');
+            const cartSubtotal = document.getElementById('cart-subtotal');
+            
+            if (cart.length === 0) {
+                cartEmptyDiv.style.display = 'block';
+                if (cartSummary) cartSummary.style.display = 'none';
+                return;
+            }
+            
+            cartEmptyDiv.style.display = 'none';
+            let totalAmount = 0;
+            
+            cart.forEach((item, idx) => {
+                // Handle both old cart structure (name, color, size, qty) and new structure (name, price, size, image, id, quantity)
+                let imgSrc = '';
+                let price = 49.95; // Default price for Ami Paris sweaters
+                let productName = item.name;
+                let productSize = item.size;
+                let productColor = item.color || 'Standard';
+                let quantity = item.qty || item.quantity || 1;
+                
+                // If item has image and price properties (new structure from detail pages)
+                if (item.image && item.price) {
+                    imgSrc = item.image;
+                    price = item.price;
+                } else {
+                    // Fallback to old logic for items added via simple cart buttons
+                    if (item.name.toLowerCase().includes('asics')) {
+                        // Handle different Asics variants
+                        if (item.name.toLowerCase().includes('yankees')) {
+                            imgSrc = 'images/asicsgelnyc-yankees1.jpg';
+                        } else if (item.name.toLowerCase().includes('ivory') || item.name.toLowerCase().includes('clay')) {
+                            imgSrc = 'images/asicsgelnyc-ivoryclaygrey1.webp';
+                        } else if (item.name.toLowerCase().includes('black') && item.name.toLowerCase().includes('graphite')) {
+                            imgSrc = 'images/asicsgelnyc-blackgraphitegrey1.jpg';
+                        } else {
+                            imgSrc = 'images/asicsgelnyc-creamarcticsky1.webp'; // Default Cream Arctic Sky
+                        }
+                        price = 84.95; // Asics shoes price
+                    } else if (item.name.toLowerCase().includes('barcelona')) {
+                        imgSrc = 'images/fcbarcelona-limitededitionbarcelonacity1.jpg';
+                        price = 29.95; // FC Barcelona jersey price
+                    } else if (item.name.toLowerCase().includes('real madrid')) {
+                        imgSrc = 'images/realmadrid-limitededitionreddragon1.jpg';
+                        price = 29.95; // Real Madrid jersey price
+                    } else if (item.name.toLowerCase().includes('portugal')) {
+                        imgSrc = 'images/portugal-limitededitionlv1.webp';
+                        price = 29.95; // Portugal jersey price
+                    } else if (item.name.toLowerCase().includes('black')) {
+                        imgSrc = 'images/ami-paris-black1.webp';
+                    } else if (item.name.toLowerCase().includes('white')) {
+                        imgSrc = 'images/ami-paris-white1.webp';
+                    } else {
+                        imgSrc = 'images/ami-paris-white1.webp'; // fallback
+                    }
+                }
+                
+                // Ensure price and quantity are valid numbers
+                if (isNaN(price)) price = 49.95; // fallback price
+                if (isNaN(quantity)) quantity = 1; // fallback quantity
+                
+                const itemTotal = (price * quantity).toFixed(2);
+                totalAmount += price * quantity;
+                
+                const div = document.createElement('div');
+                div.className = 'cart-item';
+                div.innerHTML = `
+                  <img src="${imgSrc}" alt="${productName}" class="cart-item-image">
+                  <div class="cart-item-details">
+                    <div class="cart-item-title">${productName}</div>
+                    <div class="cart-item-meta">Size: ${productSize} &nbsp;|&nbsp; Color: ${productColor}</div>
+                    <div class="cart-item-price" style="color:#d32f2f;font-weight:bold;">€${price} x ${quantity} = €${itemTotal}</div>
+                  </div>
+                  <div class="cart-item-actions">
+                    <input type="number" min="1" class="cart-qty" value="${quantity}" data-idx="${idx}" aria-label="Quantity">
+                    <button class="cart-remove" data-idx="${idx}" aria-label="Remove">&times;</button>
+                  </div>
+                `;
+                cartItemsDiv.appendChild(div);
+            });
+            
+            // Update subtotal display
+            if (cartSummary && cartSubtotal) {
+                cartSummary.style.display = 'block';
+                // Ensure totalAmount is a valid number
+                if (isNaN(totalAmount)) totalAmount = 0;
+                cartSubtotal.textContent = `€${totalAmount.toFixed(2)}`;
+            }
+            // Quantity change logic
+            cartItemsDiv.querySelectorAll('.cart-qty').forEach(input => {
+                input.addEventListener('change', function() {
+                    let idx = parseInt(this.getAttribute('data-idx'));
+                    let val = parseInt(this.value);
+                    if (isNaN(val) || val < 1) val = 1;
+                    // Handle both cart structures
+                    if (cart[idx].qty !== undefined) {
+                        cart[idx].qty = val;
+                    } else if (cart[idx].quantity !== undefined) {
+                        cart[idx].quantity = val;
+                    }
+                    localStorage.setItem('cart', JSON.stringify(cart));
+                    updateCartDisplay();
+                });
+            });
+            // Remove item logic
+            cartItemsDiv.querySelectorAll('.cart-remove').forEach(btn => {
+                btn.addEventListener('click', function() {
+                    let idx = parseInt(this.getAttribute('data-idx'));
+                    cart.splice(idx, 1);
+                    localStorage.setItem('cart', JSON.stringify(cart));
+                    updateCartDisplay();
+                });
+            });
+        }
+
+        // Add a nav link for the cart if not present
+        if (!navLinks.cart) {
+            const cartNav = document.createElement('li');
+            cartNav.innerHTML = '<a id="nav-cart" href="index.html#cart"><svg style="vertical-align:middle;" width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="#333" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><circle cx="9" cy="21" r="1.5"/><circle cx="19" cy="21" r="1.5"/><path d="M2.5 3h2l2.2 13.2a2 2 0 0 0 2 1.8h7.6a2 2 0 0 0 2-1.7l1.2-7.3H6.1"/></svg> <span style="margin-left:6px;">Cart</span></a>';
+            document.getElementById('side-nav').querySelector('ul').appendChild(cartNav);
+            navLinks.cart = document.getElementById('nav-cart');
+            sections.cart = cartSection;
+            titles.cart = 'SHOPPING CART';
+        }
+
+        // Listen for hash change to show cart
+        window.addEventListener('hashchange', function() {
+            if (window.location.hash === '#cart') showCartSection();
+        });
+
+        // --- PRODUCT PAGE CART BUTTON LOGIC ---
+        function addCartButtonLogic() {
+            document.querySelectorAll('.cart-btn').forEach(btn => {
+                // Only add event listener if button doesn't already have one
+                if (!btn.hasAttribute('data-cart-listener')) {
+                    btn.setAttribute('data-cart-listener', 'true');
+                    btn.addEventListener('click', function() {
+                        // Find product info from the page - check both .product-title and h2
+                        let name = document.querySelector('.product-title, h2')?.textContent?.trim() || 'Product';
+                        let color = 'Cream Arctic Sky'; // Default for Asics
+                        if (name.toLowerCase().includes('black')) color = 'Black';
+                        else if (name.toLowerCase().includes('white')) color = 'White';
+                        let size = document.querySelector('.size-btn.selected')?.textContent || 'M';
+                        // If no size selected, pick first
+                        if (!document.querySelector('.size-btn.selected')) {
+                            let firstBtn = document.querySelector('.size-btn');
+                            if (firstBtn) size = firstBtn.textContent;
+                        }
+                        // Add to cart
+                        let found = false;
+                        for (let item of cart) {
+                            if (item.name === name && item.color === color && item.size === size) {
+                                item.qty++;
+                                found = true;
+                                break;
+                            }
+                        }
+                        if (!found) {
+                            cart.push({ name, color, size, qty: 1 });
+                        }
+                        localStorage.setItem('cart', JSON.stringify(cart));
+                        updateCartDisplay();
+                        window.location.hash = '#cart';
+                    });
+                }
+            });
+        }
+
+        // --- SIZE BUTTON LOGIC ---
+        function addSizeButtonLogic() {
+            document.querySelectorAll('.size-btn').forEach(btn => {
+                btn.addEventListener('click', function() {
+                    document.querySelectorAll('.size-btn').forEach(b => b.classList.remove('selected'));
+                    btn.classList.add('selected');
+                });
+            });
+        }
+
+        // --- GOOGLE PLACES AUTOCOMPLETE FOR ADDRESS FIELD ---
+        window.initGooglePlacesAutocomplete = function() {
+            var addressInput = document.getElementById('buyer-address');
+            if (addressInput && window.google && window.google.maps && window.google.maps.places) {
+                var autocomplete = new google.maps.places.Autocomplete(addressInput, {
+                    types: ['address'],
+                    componentRestrictions: { country: ["be", "nl", "fr", "de", "lu"] }
+                });
+                // Optionally, fill in other fields on place selection
+                autocomplete.addListener('place_changed', function() {
+                    var place = autocomplete.getPlace();
+                    // You can parse place.address_components here to auto-fill postal code, city, etc.
+                });
+            }
+        };
+
+        // --- INIT ON LOAD ---
+        updateCartDisplay();
+        addCartButtonLogic();
+        addSizeButtonLogic();
+        setupGridThumbnailLogic(); // Initialize thumbnail logic for grid page
+        // Hide all sections except the current one on initial load
+        highlightCurrentSection();
+        window.addEventListener('hashchange', highlightCurrentSection);
+
+        // --- STRIPE CHECKOUT LOGIC ---
+        const checkoutForm = document.getElementById('checkout-form');
+        if (checkoutForm) {
+            checkoutForm.addEventListener('submit', async function(e) {
+                e.preventDefault();
+
+                let cart = JSON.parse(localStorage.getItem('cart') || '[]');
+                let subtotal = cart.reduce((sum, item) => {
+                    let price = 49.95; // Default price for Ami Paris sweaters
+                    
+                    // Use the item's price if available (new cart structure)
+                    if (item.price) {
+                        price = item.price;
+                    } else {
+                        // Fallback to product name detection (old cart structure)
+                        if (item.name.toLowerCase().includes('asics')) {
+                            price = 84.95; // Asics shoes price
+                        } else if (item.name.toLowerCase().includes('barcelona')) {
+                            price = 29.95; // FC Barcelona jersey price
+                        } else if (item.name.toLowerCase().includes('real madrid')) {
+                            price = 29.95; // Real Madrid jersey price
+                        } else if (item.name.toLowerCase().includes('portugal')) {
+                            price = 29.95; // Portugal jersey price
+                        }
+                    }
+                    
+                    let quantity = item.qty || item.quantity || 1;
+                    
+                    // Ensure price and quantity are valid numbers
+                    if (isNaN(price)) price = 49.95; // fallback price
+                    if (isNaN(quantity)) quantity = 1; // fallback quantity
+                    
+                    return sum + price * quantity;
+                }, 0);
+                
+                // Ensure subtotal is a valid number
+                if (isNaN(subtotal)) subtotal = 0;
+
+                // Calculate shipping cost (copy your logic from updateShippingInfoAndSummary)
+                const country = document.getElementById('buyer-country')?.value;
+                let shipping = 0;
+                if (country === 'Belgium') {
+                    shipping = subtotal >= 40 ? 0 : 5;
+                } else if (["Netherlands", "France", "Germany", "Luxembourg"].includes(country)) {
+                    shipping = subtotal >= 90 ? 0 : 8;
+                }
+
+                let total = subtotal + shipping;
+
+                // Collect all customer information
+                const customerInfo = {
+                    name: document.getElementById('buyer-name')?.value || '',
+                    email: document.getElementById('buyer-email')?.value || '',
+                    phone: document.getElementById('buyer-phone')?.value || '',
+                    country: document.getElementById('buyer-country')?.value || '',
+                    address: document.getElementById('buyer-address')?.value || '',
+                    houseNumber: document.getElementById('buyer-housenumber')?.value || '',
+                    postBox: document.getElementById('buyer-postbox')?.value || '',
+                    postalCode: document.getElementById('buyer-postal')?.value || '',
+                    city: document.getElementById('buyer-city')?.value || '',
+                    paymentMethod: document.getElementById('payment-method')?.value || 'card'
+                };
+
+                console.log('Sending payment request:', { amount: total, customerInfo, cart });
+                
+                try {
+                    const backendUrl = getBackendUrl();
+                    const response = await fetch(`${backendUrl}/create-checkout-session`, {
+                        method: 'POST',
+                        headers: { 'Content-Type': 'application/json' },
+                        body: JSON.stringify({ 
+                            amount: total, 
+                            customerInfo,
+                            cart
+                        })
+                    });
+                    
+                    if (!response.ok) {
+                        throw new Error(`HTTP error! status: ${response.status}`);
+                    }
+                    
+                    const data = await response.json();
+                    console.log('Response data:', data);
+                    
+                    if (data.url) {
+                        window.location = data.url;
+                    } else {
+                        alert('Payment failed: ' + (data.error || 'Unknown error'));
+                    }
+                } catch (error) {
+                    console.error('Payment error:', error);
+                    
+                    // Always show backend unavailable message for any error during payment
+                    // This covers connection refused, network timeouts, fetch failures, etc.
+                    showBackendUnavailableMessage();
+                }
+            });
+        }
+    }, 'DOMContentLoaded');
+});
+
+// Global navigation function for homepage buttons
+window.showSection = function(sectionKey) {
+    // Update the hash to trigger the existing navigation system
+    window.location.hash = '#' + sectionKey;
+    
+    // Also directly show the section if we're on the main page
+    const sections = {
+        home: document.getElementById('home'),
+        sneakers: document.getElementById('sneakers'),
+        sweaters: document.getElementById('sweaters'),
+        jerseys: document.getElementById('jerseys'),
+        beanies: document.getElementById('beanies'),
+        cart: document.getElementById('cart')
+    };
+    
+    if (sections[sectionKey]) {
+        Object.keys(sections).forEach(key => {
+            if (sections[key]) {
+                sections[key].style.setProperty('display', key === sectionKey ? 'block' : 'none', 'important');
+            }
+        });
+        
+        // Update page title
+        const pageTitle = document.getElementById('page-title');
+        const titles = {
+            home: 'HOME',
+            sneakers: 'SNEAKERS',
+            sweaters: 'SWEATERS',
+            jerseys: 'FOOTBALL JERSEYS',
+            beanies: 'BEANIES',
+            cart: 'SHOPPING CART'
+        };
+        if (pageTitle && titles[sectionKey]) {
+            pageTitle.textContent = titles[sectionKey];
+        }
+    }
+}
+
+// Newsletter signup functionality
+function handleNewsletterSignup() {
+    const emailInput = document.getElementById('newsletter-email');
+    const email = emailInput.value.trim();
+    
+    if (!email) {
+        alert('Please enter your email address');
+        return;
+    }
+    
+    // Basic email validation
+    const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+    if (!emailRegex.test(email)) {
+        alert('Please enter a valid email address');
+        return;
+    }
+    
+    // Simulate newsletter signup (in a real app, this would send to your backend)
+    const btn = document.querySelector('.newsletter-btn');
+    const originalText = btn.textContent;
+    
+    btn.textContent = 'SUBSCRIBING...';
+    btn.disabled = true;
+    
+    setTimeout(() => {
+        // Store email in localStorage as a simple example
+        let subscribers = JSON.parse(localStorage.getItem('newsletter-subscribers') || '[]');
+        if (!subscribers.includes(email)) {
+            subscribers.push(email);
+            localStorage.setItem('newsletter-subscribers', JSON.stringify(subscribers));
+        }
+        
+        btn.textContent = 'SUBSCRIBED ✓';
+        btn.style.background = '#10b981';
+        emailInput.value = '';
+        
+        setTimeout(() => {
+            btn.textContent = originalText;
+            btn.disabled = false;
+            btn.style.background = '#3b82f6';
+        }, 2000);
+        
+        alert('Thank you for subscribing! You\'ll be the first to know about new drops and exclusive deals.');
+    }, 1000);
+}
+
+// Add Enter key support for newsletter signup
+document.addEventListener('DOMContentLoaded', function() {
+    const newsletterInput = document.getElementById('newsletter-email');
+    if (newsletterInput) {
+        newsletterInput.addEventListener('keypress', function(e) {
+            if (e.key === 'Enter') {
+                handleNewsletterSignup();
+            }
+        });
+    }
+});

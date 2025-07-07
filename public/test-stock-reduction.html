@@ -1,0 +1,251 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Stock Reduction Test - Papa's Fashion</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            max-width: 800px;
+            margin: 0 auto;
+            padding: 20px;
+            background: #f5f5f5;
+        }
+        .test-section {
+            background: white;
+            padding: 20px;
+            margin: 20px 0;
+            border-radius: 10px;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+        }
+        .stock-display {
+            background: #f8f9fa;
+            padding: 15px;
+            border-radius: 5px;
+            margin: 10px 0;
+            font-family: monospace;
+        }
+        button {
+            background: #007bff;
+            color: white;
+            padding: 10px 20px;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+            margin: 5px;
+        }
+        button:hover { background: #0056b3; }
+        button.success { background: #28a745; }
+        button.danger { background: #dc3545; }
+        .status { 
+            padding: 10px; 
+            margin: 10px 0; 
+            border-radius: 5px; 
+            font-weight: bold; 
+        }
+        .status.success { background: #d4edda; color: #155724; }
+        .status.error { background: #f8d7da; color: #721c24; }
+        .status.info { background: #d1ecf1; color: #0c5460; }
+        h1 { color: #333; }
+        h2 { color: #666; }
+    </style>
+</head>
+<body>
+    <h1>Stock Reduction Test - Papa's Fashion</h1>
+    
+    <div class="test-section">
+        <h2>Current Stock Levels</h2>
+        <div id="stock-display" class="stock-display">Loading stock levels...</div>
+        <button onclick="refreshStock()">Refresh Stock</button>
+    </div>
+    
+    <div class="test-section">
+        <h2>Test Stock Reduction</h2>
+        <p>This simulates what happens when a customer completes a purchase.</p>
+        
+        <h3>Test Items:</h3>
+        <button class="success" onclick="reduceStock('ami-paris', 'white', 'M', 1)">
+            Reduce Ami Paris White Size M by 1
+        </button>
+        <button class="success" onclick="reduceStock('asics-gel-nyc', 'black-graphite-grey', '42', 1)">
+            Reduce Asics Black Size 42 by 1
+        </button>
+        <button class="danger" onclick="reduceStock('asics-gel-nyc', 'black-graphite-grey', '44', 1)">
+            Try to Reduce Out-of-Stock Item (Should Fail)
+        </button>
+        
+        <div id="reduction-status" class="status info">No reductions performed yet</div>
+    </div>
+    
+    <div class="test-section">
+        <h2>Simulate Complete Purchase</h2>
+        <p>This simulates the full purchase process including stock reduction:</p>
+        
+        <button onclick="simulatePurchase()" class="success">
+            Simulate Purchase: Ami Paris White M + Asics Black 42
+        </button>
+        
+        <div id="purchase-status" class="status info">No purchases simulated yet</div>
+    </div>
+
+    <script>
+        let currentStock = {};
+        
+        async function refreshStock() {
+            try {
+                const response = await fetch('./stock-config.json');
+                currentStock = await response.json();
+                displayStock();
+            } catch (error) {
+                document.getElementById('stock-display').innerHTML = 'Error loading stock: ' + error.message;
+            }
+        }
+        
+        function displayStock() {
+            const stockDiv = document.getElementById('stock-display');
+            let html = '<strong>Key Stock Levels:</strong><br><br>';
+            
+            // Ami Paris White
+            const amiWhite = currentStock.products['ami-paris']['white'].sizes;
+            html += 'Ami Paris White:<br>';
+            Object.keys(amiWhite).forEach(size => {
+                html += `  Size ${size}: ${amiWhite[size].stock} units<br>`;
+            });
+            html += '<br>';
+            
+            // Asics Black Graphite Grey
+            const asicsBlack = currentStock.products['asics-gel-nyc']['black-graphite-grey'].sizes;
+            html += 'Asics Gel-NYC Black Graphite Grey:<br>';
+            Object.keys(asicsBlack).forEach(size => {
+                html += `  Size ${size}: ${asicsBlack[size].stock} units<br>`;
+            });
+            
+            html += '<br><em>Last Updated: ' + (currentStock.settings.lastUpdated || 'Unknown') + '</em>';
+            stockDiv.innerHTML = html;
+        }
+        
+        async function reduceStock(productType, productVariant, size, quantity) {
+            const statusDiv = document.getElementById('reduction-status');
+            statusDiv.innerHTML = 'Processing stock reduction...';
+            statusDiv.className = 'status info';
+            
+            try {
+                const cartItems = [{
+                    name: getProductName(productType, productVariant),
+                    color: getProductColor(productType, productVariant),
+                    size: size,
+                    qty: quantity
+                }];
+                
+                const response = await fetch('http://localhost:3001/reduce-stock', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ cartItems: cartItems })
+                });
+                
+                const result = await response.json();
+                
+                if (result.success) {
+                    statusDiv.innerHTML = `✅ Stock reduction successful:<br>${JSON.stringify(result.reductions, null, 2)}`;
+                    statusDiv.className = 'status success';
+                    
+                    // Refresh stock display
+                    setTimeout(refreshStock, 500);
+                } else {
+                    statusDiv.innerHTML = `❌ Stock reduction failed: ${result.error}`;
+                    statusDiv.className = 'status error';
+                }
+                
+            } catch (error) {
+                statusDiv.innerHTML = `❌ Error: ${error.message}`;
+                statusDiv.className = 'status error';
+            }
+        }
+        
+        async function simulatePurchase() {
+            const statusDiv = document.getElementById('purchase-status');
+            statusDiv.innerHTML = 'Simulating purchase process...';
+            statusDiv.className = 'status info';
+            
+            try {
+                const cartItems = [
+                    {
+                        name: 'Ami Paris Sweater White',
+                        color: 'White',
+                        size: 'M',
+                        qty: 1
+                    },
+                    {
+                        name: 'Asics Gel-NYC Black Graphite Grey',
+                        color: 'Black Graphite Grey',
+                        size: '42',
+                        qty: 1
+                    }
+                ];
+                
+                const response = await fetch('http://localhost:3001/reduce-stock', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ cartItems: cartItems })
+                });
+                
+                const result = await response.json();
+                
+                if (result.success) {
+                    statusDiv.innerHTML = `✅ Purchase completed! Stock reduced for all items:<br><pre>${JSON.stringify(result.reductions, null, 2)}</pre>`;
+                    statusDiv.className = 'status success';
+                    
+                    // Refresh stock display
+                    setTimeout(refreshStock, 500);
+                } else {
+                    statusDiv.innerHTML = `❌ Purchase failed: ${result.error}`;
+                    statusDiv.className = 'status error';
+                }
+                
+            } catch (error) {
+                statusDiv.innerHTML = `❌ Error: ${error.message}`;
+                statusDiv.className = 'status error';
+            }
+        }
+        
+        function getProductName(productType, productVariant) {
+            const products = {
+                'ami-paris': {
+                    'black': 'Ami Paris Sweater Black',
+                    'white': 'Ami Paris Sweater White'
+                },
+                'asics-gel-nyc': {
+                    'black-graphite-grey': 'Asics Gel-NYC Black Graphite Grey',
+                    'cream-arctic-sky': 'Asics Gel-NYC Cream Arctic Sky',
+                    'ivory-clay-grey': 'Asics Gel-NYC Ivory Clay Grey',
+                    'yankees': 'Asics Gel-NYC Yankees'
+                }
+            };
+            return products[productType][productVariant];
+        }
+        
+        function getProductColor(productType, productVariant) {
+            const colors = {
+                'ami-paris': {
+                    'black': 'Black',
+                    'white': 'White'
+                },
+                'asics-gel-nyc': {
+                    'black-graphite-grey': 'Black Graphite Grey',
+                    'cream-arctic-sky': 'Cream Arctic Sky',
+                    'ivory-clay-grey': 'Ivory Clay Grey',
+                    'yankees': 'Yankees'
+                }
+            };
+            return colors[productType][productVariant];
+        }
+        
+        // Load stock on page load
+        window.onload = refreshStock;
+        
+        // Auto-refresh every 10 seconds
+        setInterval(refreshStock, 10000);
+    </script>
+</body>
+</html>

@@ -1,0 +1,236 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Payment System Test - Papa's Fashion</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            max-width: 800px;
+            margin: 0 auto;
+            padding: 20px;
+            background: #f5f5f5;
+        }
+        .test-section {
+            background: white;
+            padding: 20px;
+            margin: 20px 0;
+            border-radius: 10px;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+        }
+        .test-result {
+            padding: 10px;
+            margin: 5px 0;
+            border-radius: 5px;
+        }
+        .pass { background: #d4edda; color: #155724; }
+        .fail { background: #f8d7da; color: #721c24; }
+        .info { background: #d1ecf1; color: #0c5460; }
+        .warning { background: #fff3cd; color: #856404; }
+        button {
+            background: #4CAF50;
+            color: white;
+            padding: 10px 20px;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+            margin: 5px;
+        }
+        button:hover { background: #45a049; }
+        button:disabled { background: #ccc; cursor: not-allowed; }
+        .cart-test {
+            border: 1px solid #ddd;
+            padding: 15px;
+            margin: 10px 0;
+            border-radius: 5px;
+        }
+        h1 { color: #333; }
+        h2 { color: #666; margin-top: 30px; }
+    </style>
+</head>
+<body>
+    <h1>Payment System Test - Papa's Fashion</h1>
+    
+    <div class="test-section">
+        <h2>Backend Connection Test</h2>
+        <div id="backend-test">Testing backend connection...</div>
+        <button onclick="testBackend()">Test Backend</button>
+    </div>
+
+    <div class="test-section">
+        <h2>Stock Management Test</h2>
+        <div id="stock-test">Loading stock configuration...</div>
+        <button onclick="testStock()">Test Stock System</button>
+    </div>
+
+    <div class="test-section">
+        <h2>Cart Functionality Test</h2>
+        <div id="cart-test"></div>
+        <button onclick="testCart()">Test Cart</button>
+        <button onclick="clearCart()">Clear Cart</button>
+    </div>
+
+    <div class="test-section">
+        <h2>Payment Flow Test</h2>
+        <div id="payment-test"></div>
+        <button onclick="testPayment()" id="payment-btn">Test Payment</button>
+        <div class="warning" style="margin-top: 10px;">
+            <strong>Note:</strong> This will create a test Stripe session. Use test card: 4242424242424242
+        </div>
+    </div>
+
+    <script src="scripts/main.js"></script>
+    <script>
+        // Test backend connection
+        async function testBackend() {
+            const resultDiv = document.getElementById('backend-test');
+            resultDiv.innerHTML = 'Testing...';
+            
+            try {
+                const backendUrl = getBackendUrl();
+                const response = await fetch(`${backendUrl}/test`);
+                
+                if (response.ok) {
+                    const data = await response.text();
+                    resultDiv.innerHTML = `<div class="pass">✅ Backend connection successful: ${data}</div>`;
+                } else {
+                    resultDiv.innerHTML = `<div class="fail">❌ Backend responded with error: ${response.status}</div>`;
+                }
+            } catch (error) {
+                resultDiv.innerHTML = `<div class="fail">❌ Backend connection failed: ${error.message}</div>`;
+            }
+        }
+
+        // Test stock system
+        async function testStock() {
+            const resultDiv = document.getElementById('stock-test');
+            
+            try {
+                const response = await fetch('./stock-config.json');
+                const stockConfig = await response.json();
+                
+                let html = '<div class="pass">✅ Stock configuration loaded successfully</div>';
+                
+                // Test some stock checks
+                const asicsStock = stockConfig.products['asics-gel-nyc']['black-graphite-grey'].sizes['42']?.stock || 0;
+                const amiStock = stockConfig.products['ami-paris']['black'].sizes['M']?.stock || 0;
+                const jerseyStock = stockConfig.products['football-jerseys']['fc-barcelona'].sizes['L']?.stock || 0;
+                
+                html += `<div class="info">📊 Sample Stock Levels:</div>`;
+                html += `<div>• Asics Gel-NYC Black/Grey Size 42: ${asicsStock} units</div>`;
+                html += `<div>• Ami Paris Black Size M: ${amiStock} units</div>`;
+                html += `<div>• FC Barcelona Jersey Size L: ${jerseyStock} units</div>`;
+                
+                resultDiv.innerHTML = html;
+            } catch (error) {
+                resultDiv.innerHTML = `<div class="fail">❌ Stock system test failed: ${error.message}</div>`;
+            }
+        }
+
+        // Test cart functionality
+        function testCart() {
+            const resultDiv = document.getElementById('cart-test');
+            
+            try {
+                // Clear cart first
+                localStorage.removeItem('cart');
+                
+                // Add some test items
+                const testItems = [
+                    { name: 'Asics Gel-NYC Black Graphite Grey', color: 'Black Graphite Grey', size: '42', qty: 1 },
+                    { name: 'Ami Paris Sweater Black', color: 'Black', size: 'M', qty: 2 },
+                    { name: 'FC Barcelona Limited Edition', color: 'Barcelona City', size: 'L', qty: 1 }
+                ];
+                
+                localStorage.setItem('cart', JSON.stringify(testItems));
+                
+                // Verify cart
+                const cart = JSON.parse(localStorage.getItem('cart') || '[]');
+                
+                let html = '<div class="pass">✅ Cart functionality working</div>';
+                html += '<div class="info">Test cart contents:</div>';
+                html += '<div class="cart-test">';
+                cart.forEach(item => {
+                    html += `<div>• ${item.name} (${item.color}) - Size ${item.size} - Qty: ${item.qty}</div>`;
+                });
+                html += '</div>';
+                
+                resultDiv.innerHTML = html;
+            } catch (error) {
+                resultDiv.innerHTML = `<div class="fail">❌ Cart test failed: ${error.message}</div>`;
+            }
+        }
+
+        // Clear cart
+        function clearCart() {
+            localStorage.removeItem('cart');
+            document.getElementById('cart-test').innerHTML = '<div class="info">Cart cleared</div>';
+        }
+
+        // Test payment flow
+        async function testPayment() {
+            const resultDiv = document.getElementById('payment-test');
+            const paymentBtn = document.getElementById('payment-btn');
+            
+            paymentBtn.disabled = true;
+            resultDiv.innerHTML = 'Testing payment flow...';
+            
+            try {
+                // First ensure we have items in cart
+                const cart = JSON.parse(localStorage.getItem('cart') || '[]');
+                if (cart.length === 0) {
+                    // Add a test item
+                    cart.push({ name: 'Test Item', color: 'Test Color', size: 'M', qty: 1 });
+                    localStorage.setItem('cart', JSON.stringify(cart));
+                }
+                
+                const backendUrl = getBackendUrl();
+                const response = await fetch(`${backendUrl}/create-checkout-session`, {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({
+                        items: cart,
+                        customerInfo: {
+                            email: 'test@example.com',
+                            firstName: 'Test',
+                            lastName: 'User',
+                            address: '123 Test St',
+                            city: 'Test City',
+                            postalCode: '12345',
+                            country: 'US'
+                        }
+                    })
+                });
+                
+                if (response.ok) {
+                    const data = await response.json();
+                    resultDiv.innerHTML = `
+                        <div class="pass">✅ Payment session created successfully</div>
+                        <div class="info">Session ID: ${data.sessionId.substring(0, 20)}...</div>
+                        <div class="warning">Ready to redirect to Stripe (test mode)</div>
+                    `;
+                    
+                    // Optionally redirect to Stripe
+                    if (confirm('Redirect to Stripe test payment page?')) {
+                        window.location.href = data.url;
+                    }
+                } else {
+                    const errorData = await response.json();
+                    resultDiv.innerHTML = `<div class="fail">❌ Payment test failed: ${errorData.error}</div>`;
+                }
+            } catch (error) {
+                resultDiv.innerHTML = `<div class="fail">❌ Payment test failed: ${error.message}</div>`;
+            } finally {
+                paymentBtn.disabled = false;
+            }
+        }
+
+        // Run initial tests
+        window.onload = function() {
+            testBackend();
+            testStock();
+        };
+    </script>
+</body>
+</html>

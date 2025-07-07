@@ -1,0 +1,24 @@
+{
+  "name": "papas-fashion",
+  "version": "1.0.0",
+  "description": "Papa's Fashion - Premium streetwear e-commerce site",
+  "main": "src/index.html",
+  "scripts": {
+    "start": "live-server src",
+    "build": "echo 'Build step can be added here.'",
+    "dev": "vercel dev",
+    "deploy": "vercel"
+  },
+  "keywords": ["ecommerce", "fashion", "streetwear"],
+  "author": "Papa's Fashion",
+  "license": "ISC",
+  "dependencies": {
+    "cors": "^2.8.5",
+    "express": "^5.1.0",
+    "stripe": "^18.2.1",
+    "nodemailer": "^6.9.7"
+  },
+  "devDependencies": {
+    "live-server": "^1.2.1"
+  }
+}

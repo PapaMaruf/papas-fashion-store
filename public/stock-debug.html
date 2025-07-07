@@ -1,0 +1,395 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Stock Debug Test - Papa's Fashion</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            max-width: 900px;
+            margin: 0 auto;
+            padding: 20px;
+            background-color: #f5f5f5;
+        }
+        .container {
+            background: white;
+            padding: 30px;
+            border-radius: 10px;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+        }
+        h1 {
+            color: #333;
+            text-align: center;
+        }
+        .step {
+            margin: 20px 0;
+            padding: 15px;
+            border: 1px solid #ddd;
+            border-radius: 5px;
+            background-color: #f9f9f9;
+        }
+        .step h3 {
+            margin-top: 0;
+            color: #666;
+        }
+        .result {
+            padding: 10px;
+            border-radius: 5px;
+            margin: 10px 0;
+            font-weight: bold;
+        }
+        .success {
+            background-color: #d4edda;
+            color: #155724;
+            border: 1px solid #c3e6cb;
+        }
+        .error {
+            background-color: #f8d7da;
+            color: #721c24;
+            border: 1px solid #f5c6cb;
+        }
+        .warning {
+            background-color: #fff3cd;
+            color: #856404;
+            border: 1px solid #ffeaa7;
+        }
+        .info {
+            background-color: #d1ecf1;
+            color: #0c5460;
+            border: 1px solid #bee5eb;
+        }
+        button {
+            background-color: #007bff;
+            color: white;
+            padding: 10px 20px;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+            margin: 5px;
+        }
+        button:hover {
+            background-color: #0056b3;
+        }
+        .stock-display {
+            font-size: 18px;
+            font-weight: bold;
+            padding: 10px;
+            background-color: #e7f3ff;
+            border-radius: 5px;
+            text-align: center;
+            margin: 10px 0;
+        }
+        pre {
+            background-color: #f8f9fa;
+            padding: 10px;
+            border-radius: 5px;
+            font-size: 12px;
+            overflow-x: auto;
+            max-height: 300px;
+            overflow-y: auto;
+        }
+        .log {
+            background-color: #f8f9fa;
+            padding: 10px;
+            border-radius: 5px;
+            font-family: monospace;
+            font-size: 12px;
+            max-height: 200px;
+            overflow-y: auto;
+            border: 1px solid #dee2e6;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>🔍 Stock Debug Test</h1>
+        <p>This will debug exactly why the stock isn't reducing for Ami Paris White size M</p>
+        
+        <div class="stock-display">
+            Current Stock: <span id="stockLevel">Loading...</span>
+        </div>
+        
+        <div class="step">
+            <h3>Step 1: Backend Connection</h3>
+            <button onclick="testBackend()">Test Backend Connection</button>
+            <div id="backendResult"></div>
+        </div>
+        
+        <div class="step">
+            <h3>Step 2: Direct Stock Reduction Test</h3>
+            <button onclick="testDirectStockReduction()">Test Direct Stock Reduction</button>
+            <div id="directResult"></div>
+        </div>
+        
+        <div class="step">
+            <h3>Step 3: Complete Payment Flow Test</h3>
+            <button onclick="testPaymentFlow()">Test Complete Payment Flow</button>
+            <div id="paymentResult"></div>
+        </div>
+        
+        <div class="step">
+            <h3>Step 4: Manual Stock Update</h3>
+            <button onclick="manualStockUpdate()">Manually Reduce Stock by 1</button>
+            <div id="manualResult"></div>
+        </div>
+        
+        <div class="step">
+            <h3>Debug Log</h3>
+            <button onclick="clearLog()">Clear Log</button>
+            <div id="debugLog" class="log"></div>
+        </div>
+    </div>
+
+    <script>
+        const BACKEND_URL = 'http://localhost:3001';
+        
+        function log(message) {
+            const logDiv = document.getElementById('debugLog');
+            const timestamp = new Date().toLocaleTimeString();
+            logDiv.innerHTML += `[${timestamp}] ${message}\n`;
+            logDiv.scrollTop = logDiv.scrollHeight;
+        }
+        
+        function clearLog() {
+            document.getElementById('debugLog').innerHTML = '';
+        }
+        
+        async function checkStock() {
+            try {
+                const response = await fetch(`${BACKEND_URL}/stock-config.json`);
+                const config = await response.json();
+                const stock = config.products['ami-paris']['white'].sizes['M'].stock;
+                document.getElementById('stockLevel').textContent = stock;
+                return stock;
+            } catch (error) {
+                log(`Error checking stock: ${error.message}`);
+                document.getElementById('stockLevel').textContent = 'Error';
+                return null;
+            }
+        }
+        
+        async function testBackend() {
+            const resultDiv = document.getElementById('backendResult');
+            log('Testing backend connection...');
+            
+            try {
+                const response = await fetch(`${BACKEND_URL}/test`);
+                const result = await response.json();
+                
+                resultDiv.innerHTML = `
+                    <div class="result success">
+                        ✅ Backend Connected: ${result.message}
+                    </div>
+                `;
+                log('Backend connection: SUCCESS');
+            } catch (error) {
+                resultDiv.innerHTML = `
+                    <div class="result error">
+                        ❌ Backend Error: ${error.message}
+                    </div>
+                `;
+                log(`Backend connection: ERROR - ${error.message}`);
+            }
+        }
+        
+        async function testDirectStockReduction() {
+            const resultDiv = document.getElementById('directResult');
+            log('Testing direct stock reduction...');
+            
+            try {
+                const initialStock = await checkStock();
+                log(`Initial stock: ${initialStock}`);
+                
+                const response = await fetch(`${BACKEND_URL}/reduce-stock`, {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                    },
+                    body: JSON.stringify({
+                        items: [
+                            {
+                                name: "Ami Paris Sweater White",
+                                color: "White",
+                                size: "M",
+                                qty: 1,
+                                price: 49.95
+                            }
+                        ]
+                    })
+                });
+                
+                const result = await response.json();
+                log(`Direct reduction response: ${JSON.stringify(result)}`);
+                
+                const finalStock = await checkStock();
+                log(`Final stock: ${finalStock}`);
+                
+                const reduction = initialStock - finalStock;
+                const success = reduction === 1;
+                
+                resultDiv.innerHTML = `
+                    <div class="result ${success ? 'success' : 'error'}">
+                        ${success ? '✅' : '❌'} Stock Reduction: ${initialStock} → ${finalStock} (${reduction})
+                    </div>
+                    <div class="result info">
+                        <strong>Response:</strong><br>
+                        <pre>${JSON.stringify(result, null, 2)}</pre>
+                    </div>
+                `;
+                
+                log(`Direct stock reduction: ${success ? 'SUCCESS' : 'FAILED'}`);
+                
+            } catch (error) {
+                resultDiv.innerHTML = `
+                    <div class="result error">
+                        ❌ Error: ${error.message}
+                    </div>
+                `;
+                log(`Direct stock reduction: ERROR - ${error.message}`);
+            }
+        }
+        
+        async function testPaymentFlow() {
+            const resultDiv = document.getElementById('paymentResult');
+            log('Testing complete payment flow...');
+            
+            try {
+                const initialStock = await checkStock();
+                log(`Initial stock: ${initialStock}`);
+                
+                // Create checkout session
+                const cart = [
+                    {
+                        name: "Ami Paris Sweater White",
+                        color: "White",
+                        size: "M",
+                        qty: 1,
+                        price: 49.95
+                    }
+                ];
+                
+                const customerInfo = {
+                    name: "Debug Test",
+                    email: "debug@test.com",
+                    phone: "+32 123 456 789",
+                    country: "Belgium",
+                    address: "Test Street 123",
+                    postalCode: "1000",
+                    city: "Brussels"
+                };
+                
+                log('Creating checkout session...');
+                const checkoutResponse = await fetch(`${BACKEND_URL}/api/create-checkout-session`, {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                    },
+                    body: JSON.stringify({
+                        amount: 49.95,
+                        customerInfo: customerInfo,
+                        cart: cart
+                    })
+                });
+                
+                const checkoutResult = await checkoutResponse.json();
+                log(`Checkout session created: ${checkoutResult.sessionId}`);
+                
+                // Simulate order details call (what success page does)
+                log('Calling order details with testMode=true...');
+                const orderResponse = await fetch(`${BACKEND_URL}/order-details/${checkoutResult.sessionId}?sendEmail=false&testMode=true`);
+                const orderResult = await orderResponse.json();
+                log(`Order details response: ${JSON.stringify(orderResult)}`);
+                
+                const finalStock = await checkStock();
+                log(`Final stock: ${finalStock}`);
+                
+                const reduction = initialStock - finalStock;
+                const success = reduction === 1;
+                
+                resultDiv.innerHTML = `
+                    <div class="result ${success ? 'success' : 'error'}">
+                        ${success ? '✅' : '❌'} Payment Flow: ${initialStock} → ${finalStock} (${reduction})
+                    </div>
+                    <div class="result info">
+                        <strong>Session ID:</strong> ${checkoutResult.sessionId}<br>
+                        <strong>Order Status:</strong> ${orderResult.payment_status}<br>
+                        <strong>Email Sent:</strong> ${orderResult.emailSent || 'N/A'}
+                    </div>
+                `;
+                
+                log(`Payment flow test: ${success ? 'SUCCESS' : 'FAILED'}`);
+                
+            } catch (error) {
+                resultDiv.innerHTML = `
+                    <div class="result error">
+                        ❌ Error: ${error.message}
+                    </div>
+                `;
+                log(`Payment flow test: ERROR - ${error.message}`);
+            }
+        }
+        
+        async function manualStockUpdate() {
+            const resultDiv = document.getElementById('manualResult');
+            log('Manual stock update...');
+            
+            try {
+                const initialStock = await checkStock();
+                log(`Initial stock: ${initialStock}`);
+                
+                const response = await fetch(`${BACKEND_URL}/update-stock`, {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                    },
+                    body: JSON.stringify({
+                        productType: 'ami-paris',
+                        variant: 'white',
+                        size: 'M',
+                        newStock: Math.max(0, initialStock - 1)
+                    })
+                });
+                
+                const result = await response.json();
+                log(`Manual update response: ${JSON.stringify(result)}`);
+                
+                const finalStock = await checkStock();
+                log(`Final stock: ${finalStock}`);
+                
+                const reduction = initialStock - finalStock;
+                const success = reduction === 1;
+                
+                resultDiv.innerHTML = `
+                    <div class="result ${success ? 'success' : 'error'}">
+                        ${success ? '✅' : '❌'} Manual Update: ${initialStock} → ${finalStock} (${reduction})
+                    </div>
+                    <div class="result info">
+                        <strong>Response:</strong><br>
+                        <pre>${JSON.stringify(result, null, 2)}</pre>
+                    </div>
+                `;
+                
+                log(`Manual stock update: ${success ? 'SUCCESS' : 'FAILED'}`);
+                
+            } catch (error) {
+                resultDiv.innerHTML = `
+                    <div class="result error">
+                        ❌ Error: ${error.message}
+                    </div>
+                `;
+                log(`Manual stock update: ERROR - ${error.message}`);
+            }
+        }
+        
+        // Auto-refresh stock every 2 seconds
+        setInterval(checkStock, 2000);
+        
+        // Initial load
+        window.onload = function() {
+            checkStock();
+            log('Stock debug test loaded');
+        };
+    </script>
+</body>
+</html>

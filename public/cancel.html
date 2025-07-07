@@ -1,0 +1,95 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Payment Cancelled - Papa's Fashion</title>
+  <link href="https://fonts.googleapis.com/css2?family=Bebas+Neue&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="styles/main.css">
+  <style>
+    .cancel-container {
+      max-width: 500px;
+      margin: 5rem auto;
+      padding: 3rem 2rem;
+      background: #fff;
+      border-radius: 14px;
+      box-shadow: 0 2px 20px rgba(0,0,0,0.1);
+      text-align: center;
+    }
+    .cancel-icon {
+      font-size: 4rem;
+      color: #e74c3c;
+      margin-bottom: 1rem;
+    }
+    .cancel-title {
+      font-family: 'Bebas Neue', sans-serif;
+      font-size: 2.5rem;
+      color: #e74c3c;
+      margin-bottom: 1rem;
+    }
+    .cancel-message {
+      font-size: 1.2rem;
+      color: #666;
+      margin-bottom: 2rem;
+      line-height: 1.6;
+    }
+    .cancel-buttons {
+      display: flex;
+      gap: 1rem;
+      justify-content: center;
+      flex-wrap: wrap;
+    }
+    .btn {
+      padding: 0.8rem 1.5rem;
+      border: none;
+      border-radius: 8px;
+      font-size: 1.1rem;
+      font-weight: 600;
+      cursor: pointer;
+      text-decoration: none;
+      display: inline-block;
+      transition: all 0.3s ease;
+    }
+    .btn-primary {
+      background: #3498db;
+      color: white;
+    }
+    .btn-primary:hover {
+      background: #2980b9;
+    }
+    .btn-secondary {
+      background: #95a5a6;
+      color: white;
+    }
+    .btn-secondary:hover {
+      background: #7f8c8d;
+    }
+  </style>
+</head>
+<body>
+  <header>
+    <div class="header-brand">
+      <span>PAPA'S FASHION</span>
+      <img src="images/papasfashionlogo.png" alt="Papa's Fashion Logo" class="brand-logo" />
+    </div>
+  </header>
+
+  <div class="cancel-container">
+    <div class="cancel-icon">❌</div>
+    <h1 class="cancel-title">Payment Cancelled</h1>
+    <p class="cancel-message">
+      Your payment was cancelled and no charges were made to your account.<br>
+      Your items are still in your cart if you'd like to try again.
+    </p>
+    <div class="cancel-buttons">
+      <a href="index.html#cart" class="btn btn-primary">Return to Cart</a>
+      <a href="index.html" class="btn btn-secondary">Continue Shopping</a>
+    </div>
+  </div>
+
+  <script>
+    // Optional: Add any tracking or analytics for cancelled payments
+    console.log('Payment was cancelled by user');
+  </script>
+</body>
+</html>
