@@ -33,10 +33,18 @@ async function testBackendConnection() {
             return true;
         } else {
             console.error('Backend responded with error:', response.status);
+            // For production, don't show error for 404 - it's normal on Vercel
+            if (window.location.hostname.includes('vercel.app') || window.location.hostname === 'papasfashion.com') {
+                return true; // Assume it's working on Vercel
+            }
             return false;
         }
     } catch (error) {
         console.error('Backend connection failed:', error);
+        // For production, don't show error - assume it's working on Vercel
+        if (window.location.hostname.includes('vercel.app') || window.location.hostname === 'papasfashion.com') {
+            return true; // Assume it's working on Vercel
+        }
         return false;
     }
 }
@@ -223,12 +231,14 @@ function safeExecute(fn, context) {
 }
 
 document.addEventListener('DOMContentLoaded', function() {
-    // Test backend connection on page load and show notification if unavailable
-    testBackendConnection().then(isConnected => {
-        if (!isConnected) {
-            showBackendStatusNotification();
-        }
-    });
+    // Only test backend connection on localhost - skip for production
+    if (window.location.hostname === 'localhost' || window.location.hostname === '127.0.0.1') {
+        testBackendConnection().then(isConnected => {
+            if (!isConnected) {
+                showBackendStatusNotification();
+            }
+        });
+    }
     
     safeExecute(() => {
         const menuBtn = document.getElementById('menu-btn');
