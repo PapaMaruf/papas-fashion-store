@@ -1,12 +1,33 @@
 const stripe = require('stripe')(process.env.STRIPE_SECRET_KEY);
 
 export default async function handler(req, res) {
+  // Add CORS headers for all responses
+  res.setHeader('Access-Control-Allow-Origin', '*');
+  res.setHeader('Access-Control-Allow-Methods', 'POST, OPTIONS');
+  res.setHeader('Access-Control-Allow-Headers', 'Content-Type');
+  
+  // Handle preflight requests
+  if (req.method === 'OPTIONS') {
+    return res.status(200).end();
+  }
+  
   if (req.method !== 'POST') {
     return res.status(405).json({ error: 'Method not allowed' });
   }
 
   try {
+    console.log('=== API ENDPOINT CALLED ===');
+    console.log('Request method:', req.method);
+    console.log('Request headers:', req.headers);
+    console.log('Request body:', req.body);
+    
     const { amount, customerInfo, cart } = req.body;
+    
+    // Validate required fields
+    if (!amount || !customerInfo || !cart) {
+      console.error('Missing required fields:', { amount, customerInfo, cart });
+      return res.status(400).json({ error: 'Missing required fields' });
+    }
     
     // Determine the frontend URL based on environment
     let frontendUrl = req.headers.origin || req.headers.referer?.replace(/\/$/, '');
@@ -266,6 +287,13 @@ export default async function handler(req, res) {
     console.error('❌ Error creating checkout session:', error);
     console.error('Error details:', error.message);
     console.error('Error stack:', error.stack);
-    res.status(500).json({ error: 'Failed to create checkout session', details: error.message });
+    
+    // Send detailed error information
+    res.status(500).json({ 
+      error: 'Failed to create checkout session', 
+      details: error.message,
+      timestamp: new Date().toISOString(),
+      endpoint: 'create-checkout-session'
+    });
   }
 }
