@@ -801,6 +801,11 @@ document.addEventListener('DOMContentLoaded', function() {
                 
                 try {
                     const backendUrl = getBackendUrl();
+                    console.log('Attempting to create checkout session...');
+                    console.log('Backend URL:', backendUrl);
+                    console.log('Request URL:', `${backendUrl}/api/create-checkout-session`);
+                    console.log('Request body:', { amount: total, customerInfo, cart });
+                    
                     const response = await fetch(`${backendUrl}/api/create-checkout-session`, {
                         method: 'POST',
                         headers: { 'Content-Type': 'application/json' },
@@ -812,12 +817,32 @@ document.addEventListener('DOMContentLoaded', function() {
                     });
                     
                     console.log('Response status:', response.status);
-                    console.log('Response headers:', response.headers);
+                    console.log('Response headers:', Object.fromEntries(response.headers.entries()));
+                    console.log('Response URL:', response.url);
+                    
+                    // Check if response is actually JSON
+                    const contentType = response.headers.get('content-type');
+                    console.log('Response content-type:', contentType);
+                    
+                    if (!contentType || !contentType.includes('application/json')) {
+                        // Response is not JSON, probably an HTML error page
+                        const responseText = await response.text();
+                        console.error('Non-JSON response received:', responseText);
+                        
+                        // Check if it's a 404 error
+                        if (response.status === 404) {
+                            alert('Payment system error: API endpoint not found. Please check your deployment configuration.');
+                        } else {
+                            alert(`Payment system error: Server returned ${response.status}. Please try again or contact support.`);
+                        }
+                        return;
+                    }
                     
                     const data = await response.json();
                     console.log('Response data:', data);
                     
                     if (data.url) {
+                        console.log('Redirecting to Stripe checkout:', data.url);
                         window.location = data.url;
                     } else {
                         alert('Payment failed: ' + (data.error || 'Unknown error'));
@@ -825,11 +850,12 @@ document.addEventListener('DOMContentLoaded', function() {
                 } catch (error) {
                     console.error('Network error:', error);
                     
-                    // Check if it's a connection refused error (backend not running)
-                    if (error.message.includes('Failed to fetch') || 
-                        error.message.includes('ERR_CONNECTION_REFUSED') ||
-                        error.message.includes('fetch')) {
-                        
+                    // More specific error handling
+                    if (error.message.includes('JSON.parse') || error.message.includes('Unexpected token')) {
+                        alert('Payment system error: API returned invalid response. Please check your deployment configuration.');
+                    } else if (error.message.includes('Failed to fetch') || 
+                               error.message.includes('ERR_CONNECTION_REFUSED') ||
+                               error.message.includes('fetch')) {
                         showBackendUnavailableMessage();
                     } else {
                         alert('Network error: ' + error.message);
